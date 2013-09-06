@@ -54,6 +54,7 @@
     <Compile Include="Extensions\SideEffects.cs" />
     <Compile Include="Extensions\Traversable.cs" />
     <Compile Include="Extensions\Zipable.cs" />
+    <Compile Include="Future_static.cs" />
     <Compile Include="Maybe_static.cs" />
     <Compile Include="Promise.cs" />
     <Compile Include="Either.cs" />
