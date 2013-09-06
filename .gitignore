@@ -1,0 +1,9 @@
+Jib.Tests/bin
+Jib.Tests/obj
+Jib.sln.DotSettings.user
+Jib.v11.suo
+Jib/bin
+Jib/obj
+TestResults
+_ReSharper.Jib
+packages
