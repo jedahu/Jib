@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Jib.Extensions;
 
 namespace Jib
 {
@@ -21,7 +22,7 @@ namespace Jib
 
         public static Maybe<NonEmptyLazyList<T>> MaybeNonEmptyLazyList<T>(this IEnumerable<T> enumerable)
         {
-            return enumerable.ToLazyList().Uncons().Map(Arity.Uncurry<T, ILazyList<T>, NonEmptyLazyList<T>>(Create));
+            return enumerable.ToLazyList().Uncons().Map(Arity.Tuplize<T, ILazyList<T>, NonEmptyLazyList<T>>(Create));
         }
     }
 }

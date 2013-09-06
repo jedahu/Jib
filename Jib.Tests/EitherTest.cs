@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
+using Jib.Extensions;
 using NUnit.Framework;
 
 namespace Jib.Tests
@@ -13,13 +14,13 @@ namespace Jib.Tests
         [Test]
         public void Left_constructs_a_left_Either()
         {
-            Assert.IsTrue(Either.Left<int, string>(3).IsLeft);
+            Assert.IsTrue(Either.Left<int, string>(3).IsLeft());
         }
 
         [Test]
         public void Right_constructs_a_right_Either()
         {
-            Assert.IsTrue(Either.Right<int, string>("abc").IsRight);
+            Assert.IsTrue(Either.Right<int, string>("abc").IsRight());
         }
 
         [Test]
@@ -73,20 +74,20 @@ namespace Jib.Tests
         [Test]
         public void Fold_on_Left_calls_left_func()
         {
-            Assert.AreEqual(3, Either.Left<string, int>("abc").Fold(a => a.Length, x => x));
+            Assert.AreEqual(3, Either.Left<string, int>("abc").Cata(a => a.Length, x => x));
         }
 
         [Test]
         public void Fold_on_Right_calls_right_func()
         {
-            Assert.AreEqual(2, Either.Right<string, int>(2).Fold(a => a.Length, x => x));
+            Assert.AreEqual(2, Either.Right<string, int>(2).Cata(a => a.Length, x => x));
         }
 
         [Test]
         public void FoldVoid_on_Left_calls_left_action()
         {
             var value = -1;
-            Either.Left<string, int>("abc").FoldVoid(a => value = a.Length, x => value = x);
+            Either.Left<string, int>("abc").CataVoid(a => value = a.Length, x => value = x);
             Assert.AreEqual(3, value);
         }
 
@@ -94,7 +95,7 @@ namespace Jib.Tests
         public void FoldVoid_on_right_calls_right_action()
         {
             var value = -1;
-            Either.Right<string, int>(2).FoldVoid(a => value = a.Length, x => value = x);
+            Either.Right<string, int>(2).CataVoid(a => value = a.Length, x => value = x);
             Assert.AreEqual(2, value);
         }
 
@@ -159,7 +160,7 @@ namespace Jib.Tests
         [TestCase(new object[] {new [] {"a", null, "b"}}, Result = new[] {"a", "b"})]
         public string[] Lefts_returns_all_left_values_in_an_enumerable(string[] input)
         {
-            var eithers = input.Select(a => a.ToEither("error"));
+            var eithers = input.Select(a => a.ToEither(() => "error"));
             var lefts = eithers.Lefts();
             return lefts.ToArray();
         }

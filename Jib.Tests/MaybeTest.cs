@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using Jib.Extensions;
 using NUnit.Framework;
 
 namespace Jib.Tests
@@ -12,20 +13,20 @@ namespace Jib.Tests
         [Test]
         public void Maybe_constructed_with_null_is_full()
         {
-            Assert.IsTrue(Maybe.Just<string>(null).IsJust);
+            Assert.IsTrue(Maybe.Just<string>(null).IsJust());
         }
 
         [Test]
         public void Just_constructor_creates_full_Maybe()
         {
-            Assert.IsTrue(Maybe.Just("asdf").IsJust);
-            Assert.IsTrue(Maybe.Just<string>(null).IsJust);
+            Assert.IsTrue(Maybe.Just("asdf").IsJust());
+            Assert.IsTrue(Maybe.Just<string>(null).IsJust());
         }
 
         [Test]
         public void Nothing_constructor_creates_empty_Maybe()
         {
-            Assert.IsTrue(Maybe.Nothing<int>().IsNothing);
+            Assert.IsTrue(Maybe.Nothing<int>().IsNothing());
         }
 
         #endregion
@@ -70,20 +71,20 @@ namespace Jib.Tests
         [Test]
         public void Fold_on_Just_returns_just_arg_application()
         {
-            Assert.AreEqual(3, Maybe.Just(2).Fold(a => a + 1, () => 8));
+            Assert.AreEqual(3, Maybe.Just(2).Cata(a => a + 1, () => 8));
         }
 
         [Test]
         public void Fold_on_Nothing_returns_nothing_arg_evaluation()
         {
-            Assert.AreEqual(8, Maybe.Nothing<int>().Fold(a => a + 1, () => 8));
+            Assert.AreEqual(8, Maybe.Nothing<int>().Cata(a => a + 1, () => 8));
         }
 
         [Test]
         public void Fold_on_Just_does_not_evaluate_nothing_arg()
         {
             var evaluated = false;
-            Maybe.Just(2).Fold(a => a + 1, () => { evaluated = true; return 8; });
+            Maybe.Just(2).Cata(a => a + 1, () => { evaluated = true; return 8; });
             Assert.IsFalse(evaluated);
         }
 
@@ -91,23 +92,9 @@ namespace Jib.Tests
         public void Fold_on_Nothing_does_not_apply_just_arg()
         {
             var applied = false;
-            Maybe.Nothing<int>().Fold(a => { applied = true; return a + 1; }, () => 8);
+            Maybe.Nothing<int>().Cata(a => { applied = true; return a + 1; }, () => 8);
             Assert.IsFalse(applied);
         }
-
-        #endregion
-
-        #region Convenience methods
-
-        [Test]
-        public void Strict_Fold_is_equivalent_to_Fold()
-        {
-            Assert.AreEqual(Maybe.Just(2).Fold(a => a + 1, () => 8), Maybe.Just(2).Fold(a => a + 1, 8));
-            Assert.AreEqual(Maybe.Nothing<int>().Fold(a => a + 1, () => 8), Maybe.Nothing<int>().Fold(a => a + 1, 8));
-        }
-
-        // ValueOr doesn't require testing. They typesystem ensures that it has only one possible implementation.
-        // (Barring reflection, which isn't used.)
 
         #endregion
 
@@ -168,13 +155,13 @@ namespace Jib.Tests
         {
             var just1 = 0;
             var nothing1 = 0;
-            Maybe.Just(2).FoldVoid(a => just1 = a + 1, () => nothing1 = 8);
+            Maybe.Just(2).CataVoid(a => just1 = a + 1, () => nothing1 = 8);
             Assert.AreEqual(3, just1);
             Assert.AreEqual(0, nothing1);
 
             var just2 = 0;
             var nothing2 = 0;
-            Maybe.Nothing<int>().FoldVoid(a => just2 = a + 1, () => nothing2 = 8);
+            Maybe.Nothing<int>().CataVoid(a => just2 = a + 1, () => nothing2 = 8);
             Assert.AreEqual(0, just2);
             Assert.AreEqual(8, nothing2);
         }
@@ -211,67 +198,15 @@ namespace Jib.Tests
         }
 
         [Test]
-        public void JustEquals_returns_true_only_when_Maybe_is_Just_and_value_is_equal()
+        public void JustEq_returns_true_only_when_Maybe_is_Just_and_value_is_eq()
         {
-            Assert.IsTrue(Maybe.Just(3).JustEquals(3));
-            Assert.IsFalse(Maybe.Just(3).JustEquals(2));
-            Assert.IsTrue(Maybe.Just<string>(null).JustEquals(null));
-            Assert.IsFalse(Maybe.Nothing<int>().JustEquals(2));
-            Assert.IsFalse(Maybe.Nothing<string>().JustEquals(null));
-        }
-
-        [Test]
-        public void TypedEquals_works_as_expected()
-        {
-            Assert.IsTrue(Maybe.Just(3).TypedEquals(Maybe.Just(3)));
-            Assert.IsTrue(Maybe.Just<string>(null).TypedEquals(Maybe.Just<string>(null)));
-            Assert.IsFalse(Maybe.Just(3).TypedEquals(Maybe.Just(2)));
-            Assert.IsFalse(Maybe.Just("a").TypedEquals(Maybe.Just<string>(null)));
-            Assert.IsFalse(Maybe.Just<string>(null).TypedEquals(Maybe.Just("a")));
-            Assert.IsFalse(Maybe.Just(2).TypedEquals(Maybe.Nothing<int>()));
-            Assert.IsFalse(Maybe.Nothing<int>().TypedEquals(Maybe.Just(2)));
-            Assert.IsTrue(Maybe.Nothing<int>().TypedEquals(Maybe.Nothing<int>()));
-        }
-
-        #endregion
-
-        #region Overloaded operators
-
-        [Test]
-        public void Just_is_true_and_Nothing_is_false()
-        {
-            Assert.IsTrue((bool) Maybe.Just(3));
-            Assert.IsFalse((bool) Maybe.Nothing<int>());
-        }
-
-        [Test]
-        public void Logical_and_operator()
-        {
-            Assert.AreEqual(Maybe.Just(3), Maybe.Just(2) && Maybe.Just(3));
-            Assert.AreEqual(Maybe.Nothing<int>(), Maybe.Just(2) && Maybe.Nothing<int>());
-            Assert.AreEqual(Maybe.Nothing<int>(), Maybe.Nothing<int>() && Maybe.Just(2));
-            Assert.AreEqual(Maybe.Nothing<int>(), Maybe.Nothing<int>() && Maybe.Nothing<int>());
-        }
-
-        [Test]
-        public void Logical_or_operator()
-        {
-            Assert.AreEqual(Maybe.Just(2), Maybe.Just(2) || Maybe.Just(3));
-            Assert.AreEqual(Maybe.Just(2), Maybe.Just(2) || Maybe.Nothing<int>());
-            Assert.AreEqual(Maybe.Just(2), Maybe.Nothing<int>() || Maybe.Just(2));
-            Assert.AreEqual(Maybe.Nothing<int>(), Maybe.Nothing<int>() || Maybe.Nothing<int>());
-        }
-
-        [Test]
-        public void Equality_operator()
-        {
-            Assert.IsTrue(Maybe.Just(2) == Maybe.Just(1 + 1));
-            // ReSharper disable EqualExpressionComparison
-            Assert.IsTrue(Maybe.Nothing<int>() == Maybe.Nothing<int>());
-            // ReSharper restore EqualExpressionComparison
-            Assert.IsFalse(Maybe.Just(2) == Maybe.Just(3));
-            Assert.IsFalse(Maybe.Just(2) == Maybe.Nothing<int>());
-            Assert.IsFalse(Maybe.Nothing<int>() == Maybe.Just(2));
+            var intEq = Eq.Struct<int>();
+            var strEq = Eq.Class<string>();
+            Assert.IsTrue(Maybe.Just(3).JustEq(3, intEq));
+            Assert.IsFalse(Maybe.Just(3).JustEq(2, intEq));
+            Assert.IsTrue(Maybe.Just<string>(null).JustEq(null, strEq));
+            Assert.IsFalse(Maybe.Nothing<int>().JustEq(2, intEq));
+            Assert.IsFalse(Maybe.Nothing<string>().JustEq(null, strEq));
         }
 
         #endregion

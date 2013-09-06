@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Jib.Extensions;
 
 namespace Jib
 {
@@ -8,6 +10,11 @@ namespace Jib
         public static ILazyList<T> Empty<T>()
         {
             return new EmptyLazyList<T>();
+        }
+
+        public static ILazyList<T> Cons<T>(T head, ILazyList<T> rest)
+        {
+            return NonEmptyLazyList.Create(head, rest);
         }
 
         public static ILazyList<T> ToLazyList<T>(this IEnumerator<T> enumerator)
@@ -39,5 +46,24 @@ namespace Jib
         {
             return ((IUncons<T>) list).Uncons;
         }
+    }
+
+    public static class LazyListTraversable
+    {
+        //public static Maybe<ILazyList<TB>> TraverseMaybe<TA, TB>(this ILazyList<TA> list, Func<TA, Maybe<TB>> f)
+        //{
+        //    return list.Aggregate(
+        //        LazyList.Empty<TB>().PureMaybe(),
+        //        (bs, a) =>
+        //        Arity.Curry<TB, ILazyList<TB>, ILazyList<TB>>(LazyList.Cons)
+        //            .PureMaybe()
+        //            .Ap(f(a))
+        //            .Ap(bs));
+        //}
+
+        //public static Maybe<ILazyList<TA>> SequenceMaybe<TA>(this ILazyList<Maybe<TA>> list)
+        //{
+        //    return list.TraverseMaybe(a => a);
+        //}
     }
 }

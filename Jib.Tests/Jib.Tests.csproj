@@ -62,6 +62,7 @@
     <Compile Include="FutureTest.cs" />
     <Compile Include="SingleEnumerationTest.cs" />
     <Compile Include="StrategyTest.cs" />
+    <Compile Include="PromiseTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

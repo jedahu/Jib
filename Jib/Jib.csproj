@@ -40,25 +40,49 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Arity.cs" />
+    <Compile Include="Extensions\Monoid.cs" />
+    <Compile Include="Extensions\Applicative.cs" />
+    <Compile Include="Extensions\Bind.cs" />
+    <Compile Include="Extensions\Eq.cs" />
+    <Compile Include="Extensions\Foldable.cs" />
+    <Compile Include="Extensions\Functor.cs" />
+    <Compile Include="Extensions\Linq.cs" />
+    <Compile Include="Extensions\Morphisms.cs" />
+    <Compile Include="Extensions\Nullsafe.cs" />
+    <Compile Include="Extensions\Predicates.cs" />
+    <Compile Include="Extensions\Semigroup.cs" />
+    <Compile Include="Extensions\SideEffects.cs" />
+    <Compile Include="Extensions\Traversable.cs" />
+    <Compile Include="Extensions\Zipable.cs" />
+    <Compile Include="Maybe_static.cs" />
+    <Compile Include="Promise.cs" />
     <Compile Include="Either.cs" />
     <Compile Include="Either_static.cs" />
     <Compile Include="EmptyLazyList.cs" />
+    <Compile Include="Enumerable.cs" />
+    <Compile Include="Eq.cs" />
     <Compile Include="Future.cs" />
     <Compile Include="ILazyList.cs" />
     <Compile Include="IMemoizedEnumerable.cs" />
+    <Compile Include="IMonoid.cs" />
+    <Compile Include="ISemigroup.cs" />
     <Compile Include="IUncons.cs" />
     <Compile Include="LazyList.cs" />
     <Compile Include="Maybe.cs" />
-    <Compile Include="Maybe_static.cs" />
     <Compile Include="MemoizedEnumerable.cs" />
+    <Compile Include="MemoizedEnumerable_static.cs" />
+    <Compile Include="Monoid.cs" />
     <Compile Include="MVar.cs" />
     <Compile Include="NonEmptyLazyList.cs" />
     <Compile Include="NonEmptyLazyList_static.cs" />
     <Compile Include="Pair.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Root.cs" />
+    <Compile Include="Semigroup.cs" />
     <Compile Include="Strategy.cs" />
     <Compile Include="Unit.cs" />
     <Compile Include="Validation.cs" />
+    <Compile Include="Validation_static.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

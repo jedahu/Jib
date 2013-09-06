@@ -9,7 +9,7 @@ namespace Jib.Tests
     {
         protected override IEnumerable<T> Create<T>(IEnumerable<T> input)
         {
-            return input.MaybeNonEmptyLazyList().ValueOr(NonEmptyLazyList.Single(default(T)));
+            return input.MaybeNonEmptyLazyList().ValueOr(() => NonEmptyLazyList.Single(default(T)));
         }
     }
 }
