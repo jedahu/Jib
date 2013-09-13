@@ -17,6 +17,21 @@
             return new EitherEq<A, X>(teq, xeq);
         }
 
+        public static IEq<int> Int
+        {
+            get { return Struct<int>(); }
+        }
+
+        public static IEq<string> String
+        {
+            get { return Class<string>(); }
+        }
+
+        public static IEq<char> Char
+        {
+            get { return Struct<char>(); }
+        }
+
         public static IEq<A> Struct<A>() where A : struct
         {
             return new StructEq<A>();

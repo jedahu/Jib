@@ -9,7 +9,8 @@ namespace Jib
     /// less performance penalty. The MemoizedEnumerable static class contains a Memoize
     /// extension method that takes an enumerable and returns a IMemoizedEnumerable.
     /// </summary>
-    public class MemoizedEnumerable<T> : IMemoizedEnumerable<T>
+    public class MemoizedEnumerable<T>
+        : IEnumerable<T>
     {
         private readonly IList<T> buffer = new List<T>();
         private readonly IEnumerator<T> source;
@@ -18,11 +19,6 @@ namespace Jib
         public MemoizedEnumerable(IEnumerator<T> enumerator)
         {
             source = enumerator;
-        }
-
-        public IEnumerable<T> AsEnumerable
-        {
-            get { return this; }
         }
 
         public IEnumerator<T> GetEnumerator()

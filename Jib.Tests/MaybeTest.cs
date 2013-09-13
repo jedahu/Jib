@@ -36,32 +36,36 @@ namespace Jib.Tests
         [Test]
         public void Empty_Maybe_equals_empty_Maybe_of_same_type_parameter()
         {
+            var eq = Eq.Maybe(Eq.Int);
             var nothing = Maybe.Nothing<int>();
-            Assert.AreEqual(nothing, nothing);
-            Assert.AreEqual(Maybe.Nothing<int>(), Maybe.Nothing<int>());
-            Assert.AreNotEqual(Maybe.Nothing<int>(), Maybe.Nothing<string>());
+            Assert.True(eq.Eq(nothing, nothing));
+            Assert.True(eq.Eq(Maybe.Nothing<int>(), Maybe.Nothing<int>()));
         }
 
-        [Test]
-        public void Just_equals_Just()
+        [TestCase(1, 1)]
+        [TestCase(-3, 5)]
+        public void Just_equals_Just(int i1, int i2)
         {
-            var just = Maybe.Just(3);
-            var refJust = Maybe.Just("c");
-            Assert.AreEqual(just, just);
-            Assert.AreEqual(refJust, refJust);
-            Assert.AreEqual(Maybe.Just("a"), Maybe.Just("a"));
-            Assert.AreEqual(Maybe.Just("a"), Maybe.Just("a"));
-            Assert.AreNotEqual(Maybe.Just(1), Maybe.Just(2));
-            Assert.AreNotEqual(Maybe.Just("a"), Maybe.Just("b"));
+            var result = Eq.Maybe(Eq.Int).Eq(
+                Maybe.Just(i1),
+                Maybe.Just(i2));
+            if (Eq.Int.Eq(i1, i2)) Assert.True(result);
+            else Assert.False(result);
         }
 
-        [Test]
-        public void Nothing_and_empty_Maybe_symmetrically_dont_equal_Just()
+        [TestCase("a")]
+        [TestCase("")]
+        [TestCase(null)]
+        public void Nothing_symmetrically_does_not_equal_Just(string s)
         {
-            Assert.AreNotEqual(Maybe.Nothing<int>(), Maybe.Just(3));
-            Assert.AreNotEqual(Maybe.Just(3), Maybe.Nothing<int>());
-            Assert.AreNotEqual(Maybe.Nothing<int>(), Maybe.Just(3));
-            Assert.AreNotEqual(Maybe.Just(3), Maybe.Nothing<int>());
+            Assert.False(
+                Eq.Maybe(Eq.String).Eq(
+                Maybe.Just(s),
+                Maybe.Nothing<string>()));
+            Assert.False(
+                Eq.Maybe(Eq.String).Eq(
+                Maybe.Nothing<string>(),
+                Maybe.Just(s)));
         }
 
         #endregion
@@ -103,47 +107,58 @@ namespace Jib.Tests
         [Test]
         public void Linq_left_identity()
         {
+            var eq = Eq.Maybe(Eq.Char);
             Func<string, Maybe<char>> maybeFirst = s => String.IsNullOrEmpty(s) ? Maybe.Nothing<char>() : Maybe.Just(s[0]);
-            Assert.AreEqual(Maybe.Just("abc").Bind(maybeFirst), maybeFirst("abc"));
-            Assert.AreEqual(Maybe.Just("").Bind(maybeFirst), maybeFirst(""));
+            Assert.True(eq.Eq(Maybe.Just("abc").Bind(maybeFirst), maybeFirst("abc")));
+            Assert.True(eq.Eq(Maybe.Just("").Bind(maybeFirst), maybeFirst("")));
         }
 
         [Test]
         public void Linq_right_identity()
         {
-            Assert.AreEqual(Maybe.Just(3).Bind(Maybe.Just), Maybe.Just(3));
-            Assert.AreEqual(Maybe.Nothing<int>().Bind(Maybe.Just), Maybe.Nothing<int>());
+            var eq = Eq.Maybe(Eq.Int);
+            Assert.True(eq.Eq(Maybe.Just(3).Bind(Maybe.Just), Maybe.Just(3)));
+            Assert.True(eq.Eq(Maybe.Nothing<int>().Bind(Maybe.Just), Maybe.Nothing<int>()));
         }
 
         [Test]
         public void Linq_associativity()
         {
+            var eq = Eq.Maybe(Eq.String);
             Func<int, Maybe<int>> incr = i => Maybe.Just(i + 1);
             Func<int, Maybe<string>> str = i => Maybe.Just(i.ToString(CultureInfo.InvariantCulture));
-            Assert.AreEqual(Maybe.Just(3).Bind(incr).Bind(str), Maybe.Just(3).Bind(i => incr(i).Bind(str)));
-            Assert.AreEqual(Maybe.Nothing<int>().Bind(incr).Bind(str), Maybe.Nothing<int>().Bind(i => incr(i).Bind(str)));
+            Assert.True(eq.Eq(Maybe.Just(3).Bind(incr).Bind(str), Maybe.Just(3).Bind(i => incr(i).Bind(str))));
+            Assert.True(eq.Eq(Maybe.Nothing<int>().Bind(incr).Bind(str), Maybe.Nothing<int>().Bind(i => incr(i).Bind(str))));
         }
 
         [Test]
         public void Linq_from()
         {
-            Assert.AreEqual(Maybe.Just("1"),
-                            from x in Maybe.Just(1)
-                            select x.ToString(CultureInfo.InvariantCulture));
-            Assert.AreEqual(Maybe.Nothing<string>(),
-                            from x in Maybe.Nothing<int>()
-                            select x.ToString(CultureInfo.InvariantCulture));
-            Assert.AreEqual(Maybe.Just("3"),
-                            from x in Maybe.Just(1)
-                            from y in Maybe.Just(x + 1)
-                            select (x + y).ToString(CultureInfo.InvariantCulture));
+            var eq = Eq.Maybe(Eq.String);
+            Assert.True(
+                eq.Eq(
+                    Maybe.Just("1"),
+                    from x in Maybe.Just(1)
+                    select x.ToString(CultureInfo.InvariantCulture)));
+            Assert.True(
+                eq.Eq(
+                    Maybe.Nothing<string>(),
+                    from x in Maybe.Nothing<int>()
+                    select x.ToString(CultureInfo.InvariantCulture)));
+            Assert.True(
+                eq.Eq(
+                    Maybe.Just("3"),
+                    from x in Maybe.Just(1)
+                    from y in Maybe.Just(x + 1)
+                    select (x + y).ToString(CultureInfo.InvariantCulture)));
         }
 
         [Test]
         public void Linq_where()
         {
-            Assert.AreEqual(Maybe.Just(3), from x in Maybe.Just(3) where x % 2 == 1 select x);
-            Assert.AreEqual(Maybe.Nothing<int>(), from x in Maybe.Just(2) where x % 2 == 1 select x);
+            var eq = Eq.Maybe(Eq.Int);
+            Assert.True(eq.Eq(Maybe.Just(3), from x in Maybe.Just(3) where x%2 == 1 select x));
+            Assert.True(eq.Eq(Maybe.Nothing<int>(), from x in Maybe.Just(2) where x%2 == 1 select x));
         }
 
         #endregion
@@ -216,27 +231,27 @@ namespace Jib.Tests
         [Test]
         public void Nullable_conversion_to_Maybe()
         {
-            Assert.AreEqual(Maybe.Just(3), new int?(3).ToMaybe());
-            Assert.AreEqual(Maybe.Nothing<int>(), new int?().ToMaybe());
+            Assert.True(Eq.Maybe(Eq.Int).Eq(Maybe.Just(3), new int?(3).ToMaybe()));
+            Assert.True(new int?().ToMaybe().IsNothing());
         }
 
         [Test]
         public void Reference_conversion_to_Maybe()
         {
-            Assert.AreEqual(Maybe.Just("abc"), "abc".ToMaybe());
-            Assert.AreEqual(Maybe.Nothing<string>(), (null as string).ToMaybe());
+            Assert.True(Eq.Maybe(Eq.String).Eq(Maybe.Just("abc"), "abc".ToMaybe()));
+            Assert.True((null as string).ToMaybe().IsNothing());
         }
 
         [Test]
         public void MaybeFirst_returns_Just_for_non_empty_enumerable()
         {
-            Assert.AreEqual(Maybe.Just(3), new[] {3, 2, 1}.MaybeFirst());
+            Assert.True(Eq.Maybe(Eq.Int).Eq(Maybe.Just(3), new[] {3, 2, 1}.MaybeFirst()));
         }
 
         [Test]
         public void MaybeFirst_returns_Nothing_for_empty_enumerable()
         {
-            Assert.AreEqual(Maybe.Nothing<int>(), new int[] {}.MaybeFirst());
+            Assert.True(new int[] {}.MaybeFirst().IsNothing());
         }
 
         [Test]
@@ -248,13 +263,13 @@ namespace Jib.Tests
         [Test]
         public void MaybeGet_returns_Just_for_valid_key()
         {
-            Assert.AreEqual(Maybe.Just(3), new Dictionary<string, int> {{"foo", 3}}.MaybeGet("foo"));
+            Assert.True(Eq.Maybe(Eq.Int).Eq(Maybe.Just(3), new Dictionary<string, int> {{"foo", 3}}.MaybeGet("foo")));
         }
 
         [Test]
         public void MaybeGet_returns_Nothing_for_invalid_key()
         {
-            Assert.AreEqual(Maybe.Nothing<int>(), new Dictionary<string, int>().MaybeGet("foo"));
+            Assert.True(new Dictionary<string, int>().MaybeGet("foo").IsNothing());
         }
 
         [Test]

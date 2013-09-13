@@ -19,13 +19,6 @@ namespace Jib.Extensions
                 Jib.Either.Left<A, X>,
                 () => Jib.Either.Right<A, X>((right())));
         }
-
-        public static IEnumerable<A> Enumerable<A>(this Maybe<A> maybe)
-        {
-            return maybe.Cata(
-                a => a.PureEnumerable(),
-                System.Linq.Enumerable.Empty<A>);
-        }
     }
 
     public static class EitherMorphisms
@@ -63,6 +56,19 @@ namespace Jib.Extensions
             return either.Cata(
                 a => Enumerable.Empty<X>(),
                 x => x.PureEnumerable());
+        }
+    }
+
+    public static class EnumerableMorphisms
+    {
+        public static Maybe<NonEmptyLazyList<A>> NonEmptyLazyList<A>(this IEnumerable<A> enumerable)
+        {
+            return enumerable.Uncons().Map(Jib.NonEmptyLazyList.Create);
+        }
+        
+        public static LazyList<A> LazyList<A>(this IEnumerable<A> enumerable)
+        {
+            return Jib.LazyList.Create(enumerable);
         }
     }
 }

@@ -15,4 +15,12 @@
             return Semigroup.Either<A, X>().Op(either, other);
         }
     }
+
+    public static class NonEmptyLazyListSemigroup
+    {
+        public static NonEmptyLazyList<A> SemiOp<A>(this NonEmptyLazyList<A> nel, NonEmptyLazyList<A> other)
+        {
+            return Semigroup.NonEmptyLazyList<A>().Op(nel, other);
+        }
+    }
 }

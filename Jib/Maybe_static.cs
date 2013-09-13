@@ -19,7 +19,7 @@ namespace Jib
 
         public static IEnumerable<A> Justs<A>(this IEnumerable<Maybe<A>> maybes)
         {
-            return maybes.SelectMany(m => MaybeMorphisms.Enumerable<A>(m));
+            return maybes.SelectMany(m => m.Enumerable());
         }
 
         public static bool IsJust<A>(this Maybe<A> maybe)

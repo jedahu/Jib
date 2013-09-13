@@ -1,28 +1,26 @@
-using System.Collections.Generic;
-using Jib.Extensions;
+using System;
 
 namespace Jib
 {
-    public static class NonEmptyLazyList
+    public sealed class NonEmptyLazyList<A>
     {
-        public static NonEmptyLazyList<T> Single<T>(T head)
+        private readonly A head;
+        private readonly Lazy<Maybe<NonEmptyLazyList<A>>> tail;
+
+        public NonEmptyLazyList(A head, Func<Maybe<NonEmptyLazyList<A>>> tail)
         {
-            return new NonEmptyLazyList<T>(head, LazyList.Empty<T>);
+            this.head = head;
+            this.tail = new Lazy<Maybe<NonEmptyLazyList<A>>>(tail);
         }
 
-        public static NonEmptyLazyList<T> Create<T>(T head, IEnumerable<T> tail)
+        public A Head
         {
-            return new NonEmptyLazyList<T>(head, tail.ToLazyList);
+            get { return head; }
         }
 
-        public static NonEmptyLazyList<T> Create<T>(T head, ILazyList<T> tail)
+        public Maybe<NonEmptyLazyList<A>> Tail
         {
-            return new NonEmptyLazyList<T>(head, () => tail);
-        }
-
-        public static Maybe<NonEmptyLazyList<T>> MaybeNonEmptyLazyList<T>(this IEnumerable<T> enumerable)
-        {
-            return enumerable.ToLazyList().Uncons().Map(Arity.Tuplize<T, ILazyList<T>, NonEmptyLazyList<T>>(Create));
+            get { return tail.Value; }
         }
     }
 }

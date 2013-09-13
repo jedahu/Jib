@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jib.Tests", "Jib.Tests\Jib.
 		{01F594A7-940A-4650-B028-3F9938539F62} = {01F594A7-940A-4650-B028-3F9938539F62}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jib.Test", "Jib.Test\Jib.Test.csproj", "{4C6C65C5-82F2-4D2F-9A06-4494FBF2E518}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,6 +24,10 @@ Global
 		{3BC83091-C509-459A-9F10-FCD2501C7022}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BC83091-C509-459A-9F10-FCD2501C7022}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BC83091-C509-459A-9F10-FCD2501C7022}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C6C65C5-82F2-4D2F-9A06-4494FBF2E518}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C6C65C5-82F2-4D2F-9A06-4494FBF2E518}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C6C65C5-82F2-4D2F-9A06-4494FBF2E518}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C6C65C5-82F2-4D2F-9A06-4494FBF2E518}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

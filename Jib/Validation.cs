@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Jib.Extensions;
 
 namespace Jib
 {
@@ -60,7 +61,7 @@ namespace Jib
 
         public TZ Fold1<TZ>(Func<TA, TZ> success, Func<TX, TZ> failure)
         {
-            return Fold(success, fs => failure(fs.First()));
+            return Fold(success, fs => failure(fs.Head));
         }
 
         #endregion
@@ -74,7 +75,7 @@ namespace Jib
 
         public void FoldVoid1(Action<TA> success, Action<TX> failure)
         {
-            FoldVoid(success, fs => failure(fs.First()));
+            FoldVoid(success, fs => failure(fs.Head));
         }
 
         public void SuccessAction(Action<TA> success)
@@ -89,7 +90,7 @@ namespace Jib
 
         public void FailureAction1(Action<TX> failure)
         {
-            FailureAction(fs => failure(fs.First()));
+            FailureAction(fs => failure(fs.Head));
         }
 
         public void SuccessActionWhen(Func<TA, bool> test, Action<TA> success)
@@ -104,7 +105,7 @@ namespace Jib
 
         public void FailureAction1When(Func<TX, bool> test, Action<TX> failure)
         {
-            FailureAction(fs => { if (test(fs.First())) failure(fs.First()); });
+            FailureAction(fs => { if (test(fs.Head)) failure(fs.Head); });
         }
 
         #endregion
@@ -146,7 +147,7 @@ namespace Jib
                 a1 => v2,
                 fs1 => v2.Fold(
                     a2 => v1,
-                    fs2 => Validation.Failure<TA, TX>(fs1.Concat(fs2))));
+                    fs2 => Validation.Failure<TA, TX>(fs1.SemiOp(fs2))));
         }
 
         public static Validation<TA, TX> operator |(Validation<TA, TX> v1, Validation<TA, TX> v2)
@@ -175,7 +176,7 @@ namespace Jib
 
         public IEnumerable<TX> FailureEnumerable
         {
-            get { return Fold<IEnumerable<TX>>(a => new TX[] {}, fs => fs); }
+            get { return Fold(a => new TX[] {}, fs => fs.Enumerable()); }
         }
 
         #endregion

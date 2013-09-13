@@ -1,53 +1,31 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+using Jib.Extensions;
 
 namespace Jib
 {
-    public sealed class NonEmptyLazyList<T> : ILazyList<T>, IUncons<T>
+    public static class NonEmptyLazyList
     {
-        private readonly T head;
-        private readonly Lazy<ILazyList<T>> tail;
-
-        public NonEmptyLazyList(T head, Func<ILazyList<T>> tail)
+        public static NonEmptyLazyList<A> Single<A>(A head)
         {
-            this.head = head;
-            this.tail = new Lazy<ILazyList<T>>(tail);
+            return new NonEmptyLazyList<A>(head, Maybe.Nothing<NonEmptyLazyList<A>>);
         }
 
-        public T Head
+        public static NonEmptyLazyList<A> Create<A>(Tuple<A, IEnumerable<A>> cons)
         {
-            get { return head; }
+            return cons.Item1.Cons(cons.Item2);
         }
 
-        public ILazyList<T> Tail
+        public static NonEmptyLazyList<A> Cons<A>(this A head, NonEmptyLazyList<A> nel)
         {
-            get { return tail.Value; }
+            return new NonEmptyLazyList<A>(head, nel.PureMaybe);
         }
 
-        public Maybe<Tuple<T, ILazyList<T>>> Uncons
+        public static NonEmptyLazyList<A> Cons<A>(this A head, IEnumerable<A> tail)
         {
-            get { return Maybe.Just(Tuple.Create(Head, Tail)); }
-        }
-
-        public NonEmptyLazyList<T> Concat(IEnumerable<T> other)
-        {
-            return new NonEmptyLazyList<T>(head, () => tail.Value.Concat(other).ToLazyList());
-        }
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            yield return head;
-            foreach (var next in tail.Value)
-            {
-                yield return next;
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            return new NonEmptyLazyList<A>(
+                head,
+                () => tail.Uncons().Map(Create));
         }
     }
 }
