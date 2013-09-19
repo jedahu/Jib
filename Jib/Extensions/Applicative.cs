@@ -49,7 +49,7 @@ namespace Jib.Extensions
 
         public static Validation<B, X> Ap<A, B, X>(this Validation<Func<A, B>, X> f, Validation<A, X> arg)
         {
-            return f.Bind(f0 => arg.Map(f0));
+            return f.Zip(arg).Map(p => p.Fst(p.Snd));
         }
 
         public static Validation<B, X> Ap<A, B, X>(this Func<A, B> f, Validation<A, X> arg)

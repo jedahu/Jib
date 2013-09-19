@@ -17,6 +17,20 @@ namespace Jib.Extensions
         }
     }
 
+    public static class ValidationZipable
+    {
+        public static Validation<Pair<A, B>, X> Zip<A, B, X>(this Validation<A, X> validation, Validation<B, X> other)
+        {
+            return validation.Cata(
+                a => other.Cata(
+                    b => Validation.Success<Pair<A, B>, X>(Pair.Create(a, b)),
+                    Validation.Failure<Pair<A, B>, X>),
+                xs1 => other.Cata(
+                    b => Validation.Failure<Pair<A, B>, X>(xs1),
+                    xs2 => Validation.Failure<Pair<A, B>, X>(xs1.SemiOp(xs2))));
+        }
+    }
+
     public static class FutureZipable
     {
         public static Future<Pair<A, B>> Zip<A, B>(this Future<A> future, Future<B> other)
