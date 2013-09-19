@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Jib.Extensions
 {
@@ -76,6 +77,20 @@ namespace Jib.Extensions
         public static Future<T> Join<T>(this Future<Future<T>> future)
         {
             return future.Bind(a => a);
+        }
+    }
+
+    public static class NonEmptyLazyListBind
+    {
+        public static NonEmptyLazyList<B> Bind<A, B>(this NonEmptyLazyList<A> list, Func<A, NonEmptyLazyList<B>> f)
+        {
+            var ht = list.HeadTail();
+            return f(ht.Fst).SemiOp(ht.Snd.Select(f).Aggregate((a, b) => a.SemiOp(b)));
+        }
+
+        public static NonEmptyLazyList<A> Join<A>(this NonEmptyLazyList<NonEmptyLazyList<A>> list)
+        {
+            return list.Bind(a => a);
         }
     }
 }

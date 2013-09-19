@@ -96,4 +96,22 @@ namespace Jib.Extensions
             return m.Bind(a => k(a).Bind<B, C>(b => f(a, b).PureFuture()));
         }
     }
+
+    public static class NonEmptyLazyListLinq
+    {
+        public static NonEmptyLazyList<B> Select<A, B>(this NonEmptyLazyList<A> m, Func<A, B> f)
+        {
+            return m.Map(f);
+        }
+
+        public static NonEmptyLazyList<B> SelectMany<A, B>(this NonEmptyLazyList<A> m, Func<A, NonEmptyLazyList<B>> k)
+        {
+            return m.Bind(k);
+        }
+
+        public static NonEmptyLazyList<C> SelectMany<A, B, C>(this NonEmptyLazyList<A> m, Func<A, NonEmptyLazyList<B>> k, Func<A, B, C> f)
+        {
+            return m.Bind(a => k(a).Bind<B, C>(b => f(a, b).PureNonEmptyLazyList()));
+        }
+    }
 }

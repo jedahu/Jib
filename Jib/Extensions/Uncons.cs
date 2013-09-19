@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Jib.Extensions
 {
@@ -12,6 +13,14 @@ namespace Jib.Extensions
                 return Maybe.Just(Pair.Create(enumerator.Current, enumerator.Enumerable()));
             }
             return Maybe.Nothing<Pair<A, IEnumerable<A>>>();
+        }
+    }
+
+    public static class NonEmptyLazyListUncons
+    {
+        public static Maybe<Pair<A, IEnumerable<A>>> Uncons<A>(this NonEmptyLazyList<A> list)
+        {
+            return Maybe.Just(list.HeadTail());
         }
     }
 }

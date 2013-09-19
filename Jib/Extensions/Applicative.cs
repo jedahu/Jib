@@ -113,4 +113,22 @@ namespace Jib.Extensions
             return arg.Select(f);
         }
     }
+
+    public static class NonEmptyLazyListApplicative
+    {
+        public static NonEmptyLazyList<A> PureNonEmptyLazyList<A>(this A value)
+        {
+            return NonEmptyLazyList.Single(value);
+        }
+
+        public static NonEmptyLazyList<B> Ap<A, B>(this NonEmptyLazyList<Func<A, B>> f, NonEmptyLazyList<A> arg)
+        {
+            return f.Bind(arg.Map);
+        }
+
+        public static NonEmptyLazyList<B> Ap<A, B>(this Func<A, B> f, NonEmptyLazyList<A> arg)
+        {
+            return arg.Map(f);
+        }
+    }
 }

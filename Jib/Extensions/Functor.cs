@@ -63,7 +63,8 @@ namespace Jib.Extensions
     {
         public static NonEmptyLazyList<B> Map<A, B>(this NonEmptyLazyList<A> list, Func<A, B> f)
         {
-            return f(list.Head).Cons(list.Enumerable().Select(f));
+            var ht = list.HeadTail();
+            return f(ht.Fst).Cons(ht.Snd.Select(f));
         }
     }
 }

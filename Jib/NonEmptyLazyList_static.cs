@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Jib.Extensions;
 
 namespace Jib
@@ -26,6 +27,11 @@ namespace Jib
             return new NonEmptyLazyList<A>(
                 head,
                 () => tail.Uncons().Map(Create));
+        }
+
+        public static Pair<A, IEnumerable<A>> HeadTail<A>(this NonEmptyLazyList<A> list)
+        {
+            return Pair.Create(list.Head, list.Tail.Map(l => l.Enumerable()).ValueOr(Enumerable.Empty<A>));
         }
     }
 }
