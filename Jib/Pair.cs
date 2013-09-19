@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Jib
+﻿namespace Jib
 {
     public struct Pair<A, B>
     {
@@ -10,31 +8,31 @@ namespace Jib
 
         public Pair(A a, B b)
         {
-            this.Fst = a;
-            this.Snd = b;
+            Fst = a;
+            Snd = b;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Unwrinkle.Equals();
+        }
+
+        public override int GetHashCode()
+        {
+            return Unwrinkle.GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            return Unwrinkle.ToString();
         }
     }
 
     public static class Pair
     {
-        public static Func<Pair<A, B>, X> UnCurry<A, B, X>(this Func<A, B, X> f)
+        public static Pair<A, B> Create<A, B>(A a, B b)
         {
-            return p => f(p.Fst, p.Snd);
-        }
-
-        public static Func<Pair<A, Pair<B, C>>, X> UnCurry<A, B, C, X>(this Func<A, B, C, X> f)
-        {
-            return p => f(p.Fst, p.Snd.Fst, p.Snd.Snd);
-        }
-
-        public static Action<Pair<A, B>> UnCurry<A, B>(this Action<A, B> a)
-        {
-            return p => a(p.Fst, p.Snd);
-        }
-
-        public static Action<Pair<A, Pair<B, C>>> UnCurry<A, B, C>(this Action<A, B, C> a)
-        {
-            return p => a(p.Fst, p.Snd.Fst, p.Snd.Snd);
+            return new Pair<A, B>(a, b);
         }
     }
 }

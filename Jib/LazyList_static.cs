@@ -16,9 +16,9 @@ namespace Jib
             return new LazyList<A>(head, Empty<A>);
         }
 
-        public static LazyList<A> Create<A>(Tuple<A, IEnumerable<A>> cons)
+        public static LazyList<A> Create<A>(Pair<A, IEnumerable<A>> cons)
         {
-            return new LazyList<A>(cons.Item1, () => Create(cons.Item2));
+            return new LazyList<A>(cons.Fst, () => Create(cons.Snd));
         }
 
         public static LazyList<A> Create<A>(IEnumerable<A> enumerable)

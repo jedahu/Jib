@@ -4,17 +4,17 @@ namespace Jib
 {
     public static class Future
     {
-        public static Future<A> Func<A>(Func<A> f, Strategy s = null)
+        public static Future<A> Func<A>(Func<A> f, IStrategy s = null)
         {
             return new Future<A>(cb => cb(f()), s);
         }
 
-        public static Future<A> Lazy<A>(Lazy<A> la, Strategy s = null)
+        public static Future<A> Lazy<A>(Lazy<A> la, IStrategy s = null)
         {
             return new Future<A>(cb => cb(la.Value), s);
         }
 
-        public static Future<A> Async<A>(Action<Action<A>> action, Strategy s = null)
+        public static Future<A> Async<A>(Action<Action<A>> action, IStrategy s = null)
         {
             return new Future<A>(action, s);
         }
@@ -24,7 +24,7 @@ namespace Jib
             return new Future<A>(cb => cb(a), Strategies.Id);
         }
 
-        public static Future<A> Strategy<A>(Future<A> fa, Strategy s)
+        public static Future<A> Strategy<A>(Future<A> fa, IStrategy s)
         {
             return new Future<A>(fa.Callback, s);
         }

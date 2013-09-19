@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace Jib.Extensions
 {
@@ -25,6 +26,19 @@ namespace Jib.Extensions
         }
     }
 
+    public static class ValidationFunctor
+    {
+        public static Validation<B, X> Map<A, B, X>(this Validation<A, X> validation, Func<A, B> f)
+        {
+            return validation.Cata(a => Validation.Success<B, X>(f(a)), Validation.Failure<B, X>);
+        }
+
+        public static Validation<A, Y> MapFailure<A, X, Y>(this Validation<A, X> validation, Func<X, Y> f)
+        {
+            return validation.Cata(Validation.Success<A, Y>, xs => Validation.Failure<A, Y>(xs.Map(f)));
+        }
+    }
+
     public static class PromiseFunctor
     {
         public static Promise<B> Map<A, B>(this Promise<A> promise, Func<A, B> f)
@@ -42,6 +56,14 @@ namespace Jib.Extensions
             return new Future<B>(
                 cb => future.Callback(a => cb(f(a))),
                 future.Strategy);
+        }
+    }
+
+    public static class NonEmptyLazyListFunctor
+    {
+        public static NonEmptyLazyList<B> Map<A, B>(this NonEmptyLazyList<A> list, Func<A, B> f)
+        {
+            return f(list.Head).Cons(list.Enumerable().Select(f));
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Jib.Tests
     [TestClass]
     public class StrategyTest
     {
-        List<int> EvalOrder(Strategy s)
+        List<int> EvalOrder(IStrategy s)
         {
             var order = new List<int>();
             var expected = new List<int> {1, 2, 3};

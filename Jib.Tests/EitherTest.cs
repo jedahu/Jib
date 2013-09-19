@@ -3,7 +3,6 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Globalization;
 using Jib.Extensions;
-using Jib.Test;
 using NUnit.Framework;
 
 namespace Jib.Tests
@@ -77,7 +76,7 @@ namespace Jib.Tests
 
         #endregion
 
-        #region Fold
+        #region Cata
 
         [Test]
         public void Fold_on_Left_calls_left_func()

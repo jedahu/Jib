@@ -3,13 +3,16 @@ using System.Threading.Tasks;
 
 namespace Jib
 {
-    public interface Strategy
+    public static class Strategies
     {
-        Func<A> Call<A>(Func<A> f);
-        void Call(Action g);
+        public static IStrategy Task = new TaskStrategy();
+        public static IStrategy Id = new IdStrategy();
+        public static IStrategy Default = Task;
     }
 
-    public abstract class AbstractStrategy : Strategy
+    public abstract class AbstractStrategy
+        : Unobject
+        , IStrategy
     {
         public void Call(Action g)
         {
@@ -19,14 +22,8 @@ namespace Jib
         public abstract Func<A> Call<A>(Func<A> f);
     }
 
-    public static class Strategies
-    {
-        public static Strategy Task = new TaskStrategy();
-        public static Strategy Id = new IdStrategy();
-        public static Strategy Default = Task;
-    }
-
-    public class IdStrategy : AbstractStrategy
+    public class IdStrategy
+        : AbstractStrategy
     {
         public override Func<A> Call<A>(Func<A> f)
         {
@@ -35,7 +32,8 @@ namespace Jib
         }
     }
 
-    public class TaskStrategy : AbstractStrategy
+    public class TaskStrategy
+        : AbstractStrategy
     {
         public override Func<A> Call<A>(Func<A> f)
         {

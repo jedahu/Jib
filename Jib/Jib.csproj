@@ -57,6 +57,7 @@
     <Compile Include="Extensions\Uncons.cs" />
     <Compile Include="Extensions\Zipable.cs" />
     <Compile Include="Future_static.cs" />
+    <Compile Include="IStrategy.cs" />
     <Compile Include="LazyList.cs" />
     <Compile Include="LazyList_static.cs" />
     <Compile Include="Maybe_static.cs" />

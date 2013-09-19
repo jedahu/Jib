@@ -181,21 +181,21 @@ namespace Jib.Tests
             Assert.AreEqual(8, nothing2);
         }
 
-        // JustAction and NothingAction are trivial uses of FoldVoid. No need to test.
+        // JustRun and NothingRun are trivial uses of FoldVoid. No need to test.
 
         [Test]
         public void JustActionWhen_runs_action_only_when_predicate_returns_true()
         {
             var effect1 = 0;
-            Maybe.Just(2).JustActionWhen(a => a%2 == 0, a => effect1 = a + 1);
+            Maybe.Just(2).JustRunWhen(a => a%2 == 0, a => effect1 = a + 1);
             Assert.AreEqual(3, effect1);
 
             var effect2 = 0;
-            Maybe.Just(3).JustActionWhen(a => a%2 == 0, a => effect2 = a + 1);
+            Maybe.Just(3).JustRunWhen(a => a%2 == 0, a => effect2 = a + 1);
             Assert.AreEqual(0, effect2);
 
             var effect3 = 0;
-            Maybe.Nothing<int>().JustActionWhen(a => a%2 == 0, a => effect3 = a + 1);
+            Maybe.Nothing<int>().JustRunWhen(a => a%2 == 0, a => effect3 = a + 1);
             Assert.AreEqual(0, effect3);
         }
 

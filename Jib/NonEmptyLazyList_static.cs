@@ -11,9 +11,9 @@ namespace Jib
             return new NonEmptyLazyList<A>(head, Maybe.Nothing<NonEmptyLazyList<A>>);
         }
 
-        public static NonEmptyLazyList<A> Create<A>(Tuple<A, IEnumerable<A>> cons)
+        public static NonEmptyLazyList<A> Create<A>(Pair<A, IEnumerable<A>> cons)
         {
-            return cons.Item1.Cons(cons.Item2);
+            return cons.Fst.Cons(cons.Snd);
         }
 
         public static NonEmptyLazyList<A> Cons<A>(this A head, NonEmptyLazyList<A> nel)

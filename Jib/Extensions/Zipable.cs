@@ -7,21 +7,21 @@ namespace Jib.Extensions
 {
     public static class MaybeZipable
     {
-        public static Maybe<Tuple<A, B>> Zip<A, B>(this Maybe<A> maybe, Maybe<B> other)
+        public static Maybe<Pair<A, B>> Zip<A, B>(this Maybe<A> maybe, Maybe<B> other)
         {
             return maybe.Cata(
                 a => other.Cata(
-                    b => Maybe.Just(Tuple.Create(a, b)),
-                    Maybe.Nothing<Tuple<A, B>>),
-                Maybe.Nothing<Tuple<A, B>>);
+                    b => Maybe.Just(Pair.Create(a, b)),
+                    Maybe.Nothing<Pair<A, B>>),
+                Maybe.Nothing<Pair<A, B>>);
         }
     }
 
     public static class FutureZipable
     {
-        public static Future<Tuple<A, B>> Zip<A, B>(this Future<A> future, Future<B> other)
+        public static Future<Pair<A, B>> Zip<A, B>(this Future<A> future, Future<B> other)
         {
-            return Future.Async<Tuple<A, B>>(cb =>
+            return Future.Async<Pair<A, B>>(cb =>
                 {
                     var latch = new CountdownEvent(2);
                     var resA = default(A);
@@ -30,7 +30,7 @@ namespace Jib.Extensions
                         () =>
                             {
                                 latch.Wait();
-                                cb(Tuple.Create(resA, resB));
+                                cb(Pair.Create(resA, resB));
                             };
 
                     future.RunAsync(
@@ -53,13 +53,13 @@ namespace Jib.Extensions
 
     public static class EnumerableZipable
     {
-        public static IEnumerable<Tuple<A, B>> Zip<A, B>(this IEnumerable<A> enumerable, IEnumerable<B> other)
+        public static IEnumerable<Pair<A, B>> Zip<A, B>(this IEnumerable<A> enumerable, IEnumerable<B> other)
         {
             var otherm = other.Memoize();
             return
                 from a in enumerable
                 from b in otherm
-                select Tuple.Create(a, b);
+                select Pair.Create(a, b);
         }
     }
 }

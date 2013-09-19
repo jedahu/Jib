@@ -68,10 +68,6 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Jib.Test\Jib.Test.csproj">
-      <Project>{4C6C65C5-82F2-4D2F-9A06-4494FBF2E518}</Project>
-      <Name>Jib.Test</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Jib\Jib.csproj">
       <Project>{01f594a7-940a-4650-b028-3f9938539f62}</Project>
       <Name>Jib</Name>

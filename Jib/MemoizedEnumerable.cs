@@ -10,7 +10,8 @@ namespace Jib
     /// extension method that takes an enumerable and returns a IMemoizedEnumerable.
     /// </summary>
     public class MemoizedEnumerable<T>
-        : IEnumerable<T>
+        : Unobject
+        , IEnumerable<T>
     {
         private readonly IList<T> buffer = new List<T>();
         private readonly IEnumerator<T> source;

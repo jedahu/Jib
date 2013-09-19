@@ -6,17 +6,35 @@ namespace Jib
     {
         public static bool Equals()
         {
-            throw new NotSupportedException("Use the Eq typeclass.");
+            throw new NotSupportedException();
         }
 
         public static new int GetHashCode()
         {
-            throw new NotSupportedException("Use a typeclass.");
+            throw new NotSupportedException();
         }
 
         public static new string ToString()
         {
-            throw new NotSupportedException("Use the Show typeclass.");
+            throw new NotSupportedException();
+        }
+    }
+
+    public class Unobject
+    {
+        public override bool Equals(object other)
+        {
+            throw new NotSupportedException();
+        }
+
+        public override int GetHashCode()
+        {
+            throw new NotSupportedException();
+        }
+
+        public override string ToString()
+        {
+            throw new NotSupportedException();
         }
     }
 }

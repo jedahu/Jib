@@ -4,6 +4,7 @@ using Jib.Extensions;
 namespace Jib
 {
     public class LazyList<A>
+        : Unobject
     {
         private readonly Maybe<Tuple<A, Lazy<LazyList<A>>>> data;
 

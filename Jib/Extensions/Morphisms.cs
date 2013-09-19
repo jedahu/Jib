@@ -59,6 +59,19 @@ namespace Jib.Extensions
         }
     }
 
+    public static class ValidationMorphisms
+    {
+        public static IEnumerable<A> SuccessEnumerable<A, X>(this Validation<A, X> validation)
+        {
+            return validation.Cata(a => a.PureEnumerable(), xs => Enumerable.Empty<A>());
+        }
+
+        public static IEnumerable<X> FailureEnumerable<A, X>(this Validation<A, X> validation)
+        {
+            return validation.Cata(a => Enumerable.Empty<X>(), xs => xs.Enumerable());
+        }
+    }
+
     public static class EnumerableMorphisms
     {
         public static Maybe<NonEmptyLazyList<A>> NonEmptyLazyList<A>(this IEnumerable<A> enumerable)

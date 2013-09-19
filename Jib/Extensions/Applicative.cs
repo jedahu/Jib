@@ -40,6 +40,24 @@ namespace Jib.Extensions
         }
     }
 
+    public static class ValidationApplicative
+    {
+        public static Validation<A, X> PureValidation<A, X>(this A value)
+        {
+            return Validation.Success<A, X>(value);
+        }
+
+        public static Validation<B, X> Ap<A, B, X>(this Validation<Func<A, B>, X> f, Validation<A, X> arg)
+        {
+            return f.Bind(f0 => arg.Map(f0));
+        }
+
+        public static Validation<B, X> Ap<A, B, X>(this Func<A, B> f, Validation<A, X> arg)
+        {
+            return arg.Map(f);
+        }
+    }
+
     public static class PromiseApplicative
     {
         public static Promise<T> PurePromise<T>(this T value)
@@ -69,7 +87,7 @@ namespace Jib.Extensions
 
         public static Future<B> Ap<A, B>(this Future<Func<A, B>> f, Future<A> arg)
         {
-            return f.Zip(arg).Map(x => x.Item1(x.Item2));
+            return f.Zip(arg).Map(x => x.Fst(x.Snd));
         }
 
         public static Future<B> Ap<A, B>(this Func<A, B> f, Future<A> arg)

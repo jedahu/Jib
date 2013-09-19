@@ -4,14 +4,15 @@ using System.Threading;
 namespace Jib
 {
     public class Promise<T>
+        : Unobject
     {
         private T value;
-        private readonly Strategy strategy;
+        private readonly IStrategy strategy;
         private readonly Action<T> fulfillAction;
         private readonly CountdownEvent writeLatch = new CountdownEvent(1);
         private readonly CountdownEvent readLatch = new CountdownEvent(1);
 
-        public Promise(Action<T> onFulfill, Strategy strategy)
+        public Promise(Action<T> onFulfill, IStrategy strategy)
         {
             this.strategy = strategy;
             fulfillAction = onFulfill;
@@ -24,7 +25,7 @@ namespace Jib
         {
         }
 
-        public Strategy Strategy
+        public IStrategy Strategy
         {
             get { return strategy; }
         }

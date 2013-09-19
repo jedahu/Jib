@@ -38,6 +38,19 @@ namespace Jib.Extensions
         }
     }
 
+    public static class ValidationBind
+    {
+        public static Validation<B, X> Bind<A, B, X>(this Validation<A, X> validation, Func<A, Validation<B, X>> f)
+        {
+            return validation.Cata(f, Validation.Failure<B, X>);
+        }
+
+        public static Validation<A, X> Join<A, X>(this Validation<Validation<A, X>, X> validation)
+        {
+            return validation.Bind(a => a);
+        }
+    }
+
     public static class PromiseBind
     {
         public static Promise<B> Bind<A, B>(this Promise<A> promise, Func<A, Promise<B>> f)

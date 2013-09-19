@@ -3,6 +3,7 @@ using System;
 namespace Jib
 {
     public sealed class NonEmptyLazyList<A>
+        : Unobject
     {
         private readonly A head;
         private readonly Lazy<Maybe<NonEmptyLazyList<A>>> tail;

@@ -4,12 +4,13 @@ using System.Threading;
 namespace Jib
 {
     public class Future<A>
+        : Unobject
     {
         private readonly Action<Action<A>> callback;
 
-        private readonly Strategy strategy;
+        private readonly IStrategy strategy;
 
-        public Future(Action<Action<A>> callback, Strategy strategy = null)
+        public Future(Action<Action<A>> callback, IStrategy strategy = null)
         {
             this.callback = callback;
             this.strategy = strategy ?? Strategies.Default;
@@ -20,7 +21,7 @@ namespace Jib
             get { return callback; }
         }
 
-        public Strategy Strategy
+        public IStrategy Strategy
         {
             get { return strategy; }
         }

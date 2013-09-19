@@ -91,4 +91,23 @@ namespace Jib.Extensions
             }
         }
     }
+
+    public static class ValidationNullSafe
+    {
+        public static Validation<A, X> ToValidation<A, X>(this A value, Func<X> elseFunc)
+            where A : class
+        {
+            return value == null
+                       ? Validation.Failure<A, X>(elseFunc())
+                       : Validation.Success<A, X>(value);
+        }
+
+        public static Validation<A, X> ToValidation<A, X>(this A? value, Func<X> elseFunc)
+            where A : struct
+        {
+            return value.HasValue
+                       ? Validation.Success<A, X>(value.Value)
+                       : Validation.Failure<A, X>(elseFunc());
+        }
+    }
 }

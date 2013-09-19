@@ -1,18 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Jib.Extensions
 {
     public static class EnumerableUncons
     {
-        public static Maybe<Tuple<A, IEnumerable<A>>> Uncons<A>(this IEnumerable<A> enumerable)
+        public static Maybe<Pair<A, IEnumerable<A>>> Uncons<A>(this IEnumerable<A> enumerable)
         {
             var enumerator = enumerable.GetEnumerator();
             if (enumerator.MoveNext())
             {
-                return Maybe.Just(Tuple.Create(enumerator.Current, enumerator.Enumerable()));
+                return Maybe.Just(Pair.Create(enumerator.Current, enumerator.Enumerable()));
             }
-            return Maybe.Nothing<Tuple<A, IEnumerable<A>>>();
+            return Maybe.Nothing<Pair<A, IEnumerable<A>>>();
         }
     }
 }
