@@ -63,7 +63,20 @@ namespace Jib.Extensions
 
     public static class PromiseLinq
     {
-        
+        public static Promise<B> Select<A, B>(this Promise<A> m, Func<A, B> f)
+        {
+            return m.Map(f);
+        }
+
+        public static Promise<B> SelectMany<A, B>(this Promise<A> m, Func<A, Promise<B>> k)
+        {
+            return m.Bind(k);
+        }
+
+        public static Promise<C> SelectMany<A, B, C>(this Promise<A> m, Func<A, Promise<B>> k, Func<A, B, C> f)
+        {
+            return m.Bind(a => k(a).Bind<B, C>(b => f(a, b).PurePromise()));
+        }
     }
 
     public static class FutureLinq
