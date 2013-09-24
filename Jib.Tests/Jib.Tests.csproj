@@ -53,9 +53,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="EitherTest.cs" />
+    <Compile Include="Instances\EqTest.cs" />
+    <Compile Include="Syntax\FunctorLaws.cs" />
+    <Compile Include="Generate.cs" />
     <Compile Include="LazyListTest.cs" />
-    <Compile Include="MaybeTest.cs" />
     <Compile Include="MemoizedEnumerableTest.cs" />
     <Compile Include="NonEmptyLazyListTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

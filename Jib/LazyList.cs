@@ -1,5 +1,5 @@
 ﻿using System;
-using Jib.Extensions;
+using Jib.Syntax;
 
 namespace Jib
 {

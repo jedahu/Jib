@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Jib.Extensions;
+using Jib.Syntax;
 
 namespace Jib.Tests
 {

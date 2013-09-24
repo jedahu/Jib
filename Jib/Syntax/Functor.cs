@@ -1,26 +1,33 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
-namespace Jib.Extensions
+namespace Jib.Syntax
 {
+    public static class FuncFunctor
+    {
+        public static Func<X, B> Map<X, A, B>(this Func<A, B> f, Func<X, A> g)
+        {
+            return x => f(g(x));
+        }
+    }
+
     public static class MaybeFunctor
     {
         public static Maybe<B> Map<A, B>(this Maybe<A> maybe, Func<A, B> f)
         {
-            return maybe.Cata(
-                a => Maybe.Just(f(a)),
-                Maybe.Nothing<B>);
+            return maybe.Cata(Maybe.Nothing<B>, a => Maybe.Just(f(a)));
         }
     }
 
     public static class EitherFunctor
     {
-        public static Either<B, X> Map<A, B, X>(this Either<A, X> either, Func<A, B> f)
+        public static Either<X, B> Map<X, A, B>(this Either<X, A> either, Func<A, B> f)
         {
-            return either.Cata(a => Either.Left<B, X>(f(a)), Either.Right<B, X>);
+            return either.Cata(Either.Left<X, B>, a => Either.Right<X, B>(f(a)));
         }
 
-        public static Either<A, Y> MapRight<A, X, Y>(this Either<A, X> either, Func<X, Y> f)
+        public static Either<Y, A> MapRight<X, Y, A>(this Either<X, A> either, Func<X, Y> f)
         {
             return either.Swap(e => e.Map(f));
         }
@@ -28,14 +35,14 @@ namespace Jib.Extensions
 
     public static class ValidationFunctor
     {
-        public static Validation<B, X> Map<A, B, X>(this Validation<A, X> validation, Func<A, B> f)
+        public static Validation<X, B> Map<X, A, B>(this Validation<X, A> validation, Func<A, B> f)
         {
-            return validation.Cata(a => Validation.Success<B, X>(f(a)), Validation.Failure<B, X>);
+            return validation.Cata(Validation.Failure<X, B>, a => Validation.Success<X, B>(f(a)));
         }
 
-        public static Validation<A, Y> MapFailure<A, X, Y>(this Validation<A, X> validation, Func<X, Y> f)
+        public static Validation<Y, A> MapFailure<X, Y, A>(this Validation<X, A> validation, Func<X, Y> f)
         {
-            return validation.Cata(Validation.Success<A, Y>, xs => Validation.Failure<A, Y>(xs.Map(f)));
+            return validation.Cata(xs => Validation.Failure<Y, A>(xs.Map(f)), Validation.Success<Y, A>);
         }
     }
 
@@ -56,6 +63,14 @@ namespace Jib.Extensions
             return new Future<B>(
                 cb => future.Callback(a => cb(f(a))),
                 future.Strategy);
+        }
+    }
+
+    public static class TaskFunctor
+    {
+        public static Task<B> Map<A, B>(this Task<A> task, Func<A, B> f)
+        {
+            return task.ContinueWith(t => f(t.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
         }
     }
 

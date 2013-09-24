@@ -1,4 +1,4 @@
-﻿namespace Jib.Extensions
+﻿namespace Jib.Syntax
 {
     public static class MaybeMonoid
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Jib.Extensions;
+using Jib.Syntax;
 
 namespace Jib
 {

@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Jib.Extensions
+namespace Jib.Syntax
 {
     public static class MaybeEnumerable
     {
         public static IEnumerable<A> Enumerable<A>(this Maybe<A> maybe)
         {
-            return maybe.Cata(
-                a => a.PureEnumerable(),
-                System.Linq.Enumerable.Empty<A>);
+            return maybe.Cata(System.Linq.Enumerable.Empty<A>, a => a.PureEnumerable());
         }
     }
 

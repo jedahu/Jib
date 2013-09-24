@@ -5,7 +5,7 @@ namespace Jib
     /// <summary>
     /// A data type that encodes the concept of failure.
     /// </summary>
-    public struct Validation<A, X>
+    public struct Validation<X, A>
     {
         private readonly A successValue;
         private readonly NonEmptyLazyList<X> failuresValue;
@@ -25,7 +25,7 @@ namespace Jib
             isSuccess = false;
         }
 
-        public Z Cata<Z>(Func<A, Z> success, Func<NonEmptyLazyList<X>, Z> failure)
+        public Z Cata<Z>(Func<NonEmptyLazyList<X>, Z> failure, Func<A, Z> success)
         {
             return isSuccess ? success(successValue) : failure(SafeFailures);
         }

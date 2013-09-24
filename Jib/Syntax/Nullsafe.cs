@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Jib.Extensions
+namespace Jib.Syntax
 {
     public static class MaybeNullsafe
     {
@@ -51,63 +51,63 @@ namespace Jib.Extensions
 
     public static class EitherNullSafe
     {
-        public static Either<A, X> ToEither<A, X>(this A value, Func<X> elseFunc)
+        public static Either<X, A> ToEither<X, A>(this A value, Func<X> elseFunc)
             where A : class
         {
             return value == null
-                ? Either.Right<A, X>(elseFunc())
-                : Either.Left<A, X>(value);
+                ? Either.Left<X, A>(elseFunc())
+                : Either.Right<X, A>(value);
         }
         
-        public static Either<A, X> ToEither<A, X>(this A? value, Func<X> elseFunc)
+        public static Either<X, A> ToEither<X, A>(this A? value, Func<X> elseFunc)
             where A : struct
         {
             return value.HasValue
-                ? Either.Left<A, X>(value.Value)
-                : Either.Right<A, X>(elseFunc());
+                ? Either.Right<X, A>(value.Value)
+                : Either.Left<X, A>(elseFunc());
         }
 
-        public static Either<A, X> EitherGet<K, A, X>(this IDictionary<K, A> dict, K key, X elseValue)
+        public static Either<X, A> EitherGet<K, A, X>(this IDictionary<K, A> dict, K key, X elseValue)
         {
             try
             {
-                return Either.Left<A, X>(dict[key]);
+                return Either.Right<X, A>(dict[key]);
             }
             catch (KeyNotFoundException)
             {
-                return Either.Right<A, X>(elseValue);
+                return Either.Left<X, A>(elseValue);
             }
         }
 
-        public static Either<A, X> EitherGet<K, A, X>(this IDictionary<K, A> dict, K key, Func<X> elseFunc)
+        public static Either<X, A> EitherGet<K, A, X>(this IDictionary<K, A> dict, K key, Func<X> elseFunc)
         {
             try
             {
-                return Either.Left<A, X>(dict[key]);
+                return Either.Right<X, A>(dict[key]);
             }
             catch (KeyNotFoundException)
             {
-                return Either.Right<A, X>(elseFunc());
+                return Either.Left<X, A>(elseFunc());
             }
         }
     }
 
     public static class ValidationNullSafe
     {
-        public static Validation<A, X> ToValidation<A, X>(this A value, Func<X> elseFunc)
+        public static Validation<X, A> ToValidation<X, A>(this A value, Func<X> elseFunc)
             where A : class
         {
             return value == null
-                       ? Validation.Failure<A, X>(elseFunc())
-                       : Validation.Success<A, X>(value);
+                       ? Validation.Failure<X, A>(elseFunc())
+                       : Validation.Success<X, A>(value);
         }
 
-        public static Validation<A, X> ToValidation<A, X>(this A? value, Func<X> elseFunc)
+        public static Validation<X, A> ToValidation<X, A>(this A? value, Func<X> elseFunc)
             where A : struct
         {
             return value.HasValue
-                       ? Validation.Success<A, X>(value.Value)
-                       : Validation.Failure<A, X>(elseFunc());
+                       ? Validation.Success<X, A>(value.Value)
+                       : Validation.Failure<X, A>(elseFunc());
         }
     }
 }

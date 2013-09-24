@@ -1,68 +1,73 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Jib.Extensions;
+using Jib.Syntax;
 
 namespace Jib
 {
     public static class Validation
     {
-        public static Validation<A, X> Success<A, X>(A successValue)
+        public static Validation<X, A> Success<X, A>(A successValue)
         {
-            return new Validation<A, X>(successValue);
+            return new Validation<X, A>(successValue);
         }
 
-        public static Validation<A, X> Failure<A, X>(X failureValue)
+        public static Validation<X, A> Failure<X, A>(X failureValue)
         {
-            return new Validation<A, X>(NonEmptyLazyList.Single(failureValue));
+            return new Validation<X, A>(NonEmptyLazyList.Single(failureValue));
         }
 
-        public static Validation<A, X> Failure<A, X>(NonEmptyLazyList<X> failures)
+        public static Validation<X, A> Failure<X, A>(NonEmptyLazyList<X> failures)
         {
-            return new Validation<A, X>(failures);
+            return new Validation<X, A>(failures);
         }
 
-        public static Validation<A, X> SuccessIf<A, X>(bool test, Func<A> success, Func<X> failure)
+        public static Validation<X, A> SuccessIf<X, A>(bool test, Func<A> success, Func<X> failure)
         {
-            return test ? Success<A, X>(success()) : Failure<A, X>(failure());
+            return test ? Success<X, A>(success()) : Failure<X, A>(failure());
         }
 
-        public static Validation<A, X> SuccessIf<A, X>(bool test, A success, X failure)
+        public static Validation<X, A> SuccessIf<X, A>(bool test, A success, X failure)
         {
-            return test ? Success<A, X>(success) : Failure<A, X>(failure);
+            return test ? Success<X, A>(success) : Failure<X, A>(failure);
         }
 
-        public static Validation<A, X> FailureIf<A, X>(bool test, Func<A> success, Func<X> failure)
+        public static Validation<X, A> FailureIf<X, A>(bool test, Func<A> success, Func<X> failure)
         {
-            return test ? Failure<A, X>(failure()) : Success<A, X>(success());
+            return test ? Failure<X, A>(failure()) : Success<X, A>(success());
         }
 
-        public static Validation<A, X> FailureIf<A, X>(bool test, A success, X failure)
+        public static Validation<X, A> FailureIf<X, A>(bool test, A success, X failure)
         {
-            return test ? Failure<A, X>(failure) : Success<A, X>(success);
+            return test ? Failure<X, A>(failure) : Success<X, A>(success);
         }
 
-        public static Z Cata1<A, X, Z>(this Validation<A, X> validation, Func<A, Z> success, Func<X, Z> failure)
+        public static A SuccessOr<X, A>(this Validation<X, A> validation, Func<A> orElse)
         {
-            return validation.Cata(success, xs => failure(xs.Head));
+            return validation.Cata(xs => orElse(), a => a);
         }
 
-        public static bool IsSuccess<A, X>(this Validation<A, X> validation)
+        public static Z Cata1<A, X, Z>(this Validation<X, A> validation, Func<A, Z> success, Func<X, Z> failure)
         {
-            return validation.Cata(a => true, x => false);
+            return validation.Cata(xs => failure(xs.Head), success);
         }
 
-        public static bool IsFailure<A, X>(this Validation<A, X> validation)
+        public static bool IsSuccess<X, A>(this Validation<X, A> validation)
         {
-            return validation.Cata(a => false, x => true);
+            return validation.Cata(x => false, a => true);
         }
 
-        public static IEnumerable<A> Successes<A, X>(this IEnumerable<Validation<A, X>> enumerable)
+        public static bool IsFailure<X, A>(this Validation<X, A> validation)
+        {
+            return validation.Cata(x => true, a => false);
+        }
+
+        public static IEnumerable<A> Successes<X, A>(this IEnumerable<Validation<X, A>> enumerable)
         {
             return enumerable.SelectMany(v => v.SuccessEnumerable());
         }
 
-        public static IEnumerable<X> Failures<A, X>(this IEnumerable<Validation<A, X>> enumerable)
+        public static IEnumerable<X> Failures<X, A>(this IEnumerable<Validation<X, A>> enumerable)
         {
             return enumerable.SelectMany(v => v.FailureEnumerable());
         }

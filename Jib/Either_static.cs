@@ -1,78 +1,78 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Jib.Extensions;
+using Jib.Syntax;
 
 namespace Jib
 {
     public static class Either
     {
-        public static Either<A, X> Left<A, X>(A leftValue)
+        public static Either<X, A> Left<X, A>(X leftValue)
         {
-            return new Either<A, X>(leftValue, default(X), true);
+            return new Either<X, A>(leftValue, default(A), false);
         }
 
-        public static Either<A, X> Right<A, X>(X rightValue)
+        public static Either<X, A> Right<X, A>(A rightValue)
         {
-            return new Either<A, X>(default(A), rightValue, false);
+            return new Either<X, A>(default(X), rightValue, true);
         }
 
-        public static Either<A, X> LeftIf<A, X>(bool isLeft, Func<A> left, Func<X> right)
+        public static Either<X, A> LeftIf<X, A>(bool isLeft, Func<X> left, Func<A> right)
         {
-            return isLeft ? Left<A, X>(left()) : Right<A, X>(right());
+            return isLeft ? Left<X, A>(left()) : Right<X, A>(right());
         }
 
-        public static Either<A, X> RightIf<A, X>(bool isRight, Func<A> left, Func<X> right)
+        public static Either<X, A> RightIf<X, A>(bool isRight, Func<X> left, Func<A> right)
         {
-            return isRight ? Right<A, X>(right()) : Left<A, X>(left());
+            return isRight ? Right<X, A>(right()) : Left<X, A>(left());
         }
 
-        public static Either<A, X> LeftIf<A, X>(bool isLeft, A left, X right)
+        public static Either<X, A> LeftIf<X, A>(bool isLeft, X left, A right)
         {
-            return isLeft ? Left<A, X>(left) : Right<A, X>(right);
+            return isLeft ? Left<X, A>(left) : Right<X, A>(right);
         }
 
-        public static Either<A, X> RightIf<A, X>(bool isRight, A left, X right)
+        public static Either<X, A> RightIf<X, A>(bool isRight, X left, A right)
         {
-            return isRight ? Right<A, X>(right) : Left<A, X>(left);
+            return isRight ? Right<X, A>(right) : Left<X, A>(left);
         }
 
-        public static bool IsLeft<A, X>(this Either<A, X> either)
+        public static bool IsLeft<X, A>(this Either<X, A> either)
         {
-            return either.Cata(a => true, x => false);
+            return either.Cata(x => true, a => false);
         }
 
-        public static bool IsRight<A, X>(this Either<A, X> either)
+        public static bool IsRight<X, A>(this Either<X, A> either)
         {
-            return either.Cata(a => false, x => true);
+            return either.Cata(x => false, a => true);
         }
 
-        public static A LeftOr<A, X>(this Either<A, X> either, Func<A> or)
+        public static X LeftOr<X, A>(this Either<X, A> either, Func<X> or)
         {
-            return either.Cata(a => a, x => or());
+            return either.Cata(x => x, a => or());
         }
 
-        public static X RightOr<A, X>(this Either<A, X> either, Func<X> or)
+        public static A RightOr<X, A>(this Either<X, A> either, Func<A> or)
         {
-            return either.Cata(a => or(), x => x);
+            return either.Cata(x => or(), a => a);
         }
 
-        public static Either<X, A> Swap<A, X>(this Either<A, X> either)
+        public static Either<A, X> Swap<X, A>(this Either<X, A> either)
         {
-            return either.Cata(Right<X, A>, Left<X, A>);
+            return either.Cata(Right<A, X>, Left<A, X>);
         }
 
-        public static Either<A, Y> Swap<A, X, Y>(this Either<A, X> either, Func<Either<X, A>, Either<Y, A>> f)
+        public static Either<Y, A> Swap<A, X, Y>(this Either<X, A> either, Func<Either<A, X>, Either<A, Y>> f)
         {
             return f(either.Swap()).Swap();
         }
 
-        public static IEnumerable<A> Lefts<A, X>(this IEnumerable<Either<A, X>> eithers)
+        public static IEnumerable<X> Lefts<X, A>(this IEnumerable<Either<X, A>> eithers)
         {
             return eithers.SelectMany(e => e.LeftEnumerable());
         }
 
-        public static IEnumerable<X> Rights<A, X>(this IEnumerable<Either<A, X>> eithers)
+        public static IEnumerable<A> Rights<X, A>(this IEnumerable<Either<X, A>> eithers)
         {
             return eithers.SelectMany(e => e.RightEnumerable());
         }

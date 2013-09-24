@@ -1,4 +1,4 @@
-﻿using Jib.Extensions;
+﻿using Jib.Syntax;
 
 namespace Jib
 {
@@ -12,19 +12,19 @@ namespace Jib
             return new MaybeSemigroup<A>();
         }
 
-        public static ISemigroup<Either<A, X>> Either<A, X>()
+        public static ISemigroup<Either<X, A>> Either<X, A>()
         {
-            return new EitherSemigroup<A, X>();
+            return new EitherSemigroup<X, A>();
         }
 
-        public static ISemigroup<Validation<A, X>> ValidationSuccess<A, X>()
+        public static ISemigroup<Validation<X, A>> ValidationSuccess<X, A>()
         {
-            return new ValidationSuccessSemigroup<A, X>();
+            return new ValidationSuccessSemigroup<X, A>();
         }
 
-        public static ISemigroup<Validation<A, X>> ValidationFailure<A, X>()
+        public static ISemigroup<Validation<X, A>> ValidationFailure<X, A>()
         {
-            return new ValidationFailureSemigroup<A, X>();
+            return new ValidationFailureSemigroup<X, A>();
         }
 
         public static ISemigroup<NonEmptyLazyList<A>> NonEmptyLazyList<A>()
@@ -37,42 +37,34 @@ namespace Jib
         {
             public Maybe<A> Op(Maybe<A> t1, Maybe<A> t2)
             {
-                return t1.Cata(a => t1, () => t2);
+                return t1.Cata(() => t2, a => t1);
             }
         }
 
-        private class EitherSemigroup<A, X>
-            : ISemigroup<Either<A, X>>
+        private class EitherSemigroup<X, A>
+            : ISemigroup<Either<X, A>>
         {
-            public Either<A, X> Op(Either<A, X> t1, Either<A, X> t2)
+            public Either<X, A> Op(Either<X, A> t1, Either<X, A> t2)
             {
-                return t1.Cata(a => t1, x => t2);
+                return t1.Cata(x => t2, a => t1);
             }
         }
 
-        private class ValidationSuccessSemigroup<A, X>
-            : ISemigroup<Validation<A, X>>
+        private class ValidationSuccessSemigroup<X, A>
+            : ISemigroup<Validation<X, A>>
         {
-            public Validation<A, X> Op(Validation<A, X> t1, Validation<A, X> t2)
+            public Validation<X, A> Op(Validation<X, A> t1, Validation<X, A> t2)
             {
-                return t1.Cata(
-                    a1 => t1,
-                    xs1 => t2.Cata(
-                        a2 => t2,
-                        xs2 => Validation.Failure<A, X>(xs1.SemiOp(xs2))));
+                return t1.Cata(xs1 => t2.Cata(xs2 => Validation.Failure<X, A>(xs1.SemiOp(xs2)), a2 => t2), a1 => t1);
             }
         }
 
-        private class ValidationFailureSemigroup<A, X>
-            : ISemigroup<Validation<A, X>>
+        private class ValidationFailureSemigroup<X, A>
+            : ISemigroup<Validation<X, A>>
         {
-            public Validation<A, X> Op(Validation<A, X> t1, Validation<A, X> t2)
+            public Validation<X, A> Op(Validation<X, A> t1, Validation<X, A> t2)
             {
-                return t1.Cata(
-                    a1 => t2,
-                    xs1 => t2.Cata(
-                        a2 => t1,
-                        xs2 => Validation.Failure<A, X>(xs1.SemiOp(xs2))));
+                return t1.Cata(xs1 => t2.Cata(xs2 => Validation.Failure<X, A>(xs1.SemiOp(xs2)), a2 => t1), a1 => t2);
             }
         }
 
@@ -83,7 +75,7 @@ namespace Jib
             {
                 return new NonEmptyLazyList<A>(
                     t1.Head,
-                    () => Jib.Maybe.Just(t1.Tail.Cata(nel => Op(nel, t2), () => t2)));
+                    () => Jib.Maybe.Just(t1.Tail.Cata(() => t2, nel => Op(nel, t2))));
             }
         }
     }

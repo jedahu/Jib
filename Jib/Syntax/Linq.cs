@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Jib.Extensions
+namespace Jib.Syntax
 {
     public static class MaybeLinq
     {
@@ -21,43 +21,43 @@ namespace Jib.Extensions
 
         public static Maybe<A> Where<A>(this Maybe<A> maybe, Func<A, bool> predicate)
         {
-            return maybe.Cata(a => predicate(a) ? maybe : Maybe.Nothing<A>(), Maybe.Nothing<A>);
+            return maybe.Cata(Maybe.Nothing<A>, a => predicate(a) ? maybe : Maybe.Nothing<A>());
         }
     }
 
     public static class EitherLinq
     {
-        public static Either<B, X> Select<A, B, X>(this Either<A, X> either, Func<A, B> selectFunc)
+        public static Either<X, B> Select<X, A, B>(this Either<X, A> either, Func<A, B> selectFunc)
         {
             return either.Map(selectFunc);
         }
 
-        public static Either<B, X> SelectMany<A, B, X>(this Either<A, X> either, Func<A, Either<B, X>> selectManyFunc)
+        public static Either<X, B> SelectMany<X, A, B>(this Either<X, A> either, Func<A, Either<X, B>> selectManyFunc)
         {
             return either.Bind(selectManyFunc);
         }
 
-        public static Either<C, X> SelectMany<A, B, C, X>(this Either<A, X> either, Func<A, Either<B, X>> selectManyFunc, Func<A, B, C> combineFunc)
+        public static Either<X, C> SelectMany<X, A, B, C>(this Either<X, A> either, Func<A, Either<X, B>> selectManyFunc, Func<A, B, C> combineFunc)
         {
-            return either.Bind(a => selectManyFunc(a).Bind(b => Either.Left<C, X>(combineFunc(a, b))));
+            return either.Bind(a => selectManyFunc(a).Bind(b => Either.Right<X, C>(combineFunc(a, b))));
         }
     }
 
     public static class ValidationLinq
     {
-        public static Validation<B, X> Select<A, B, X>(this Validation<A, X> either, Func<A, B> selectFunc)
+        public static Validation<X, B> Select<X, A, B>(this Validation<X, A> either, Func<A, B> selectFunc)
         {
             return either.Map(selectFunc);
         }
 
-        public static Validation<B, X> SelectMany<A, B, X>(this Validation<A, X> either, Func<A, Validation<B, X>> selectManyFunc)
+        public static Validation<X, B> SelectMany<X, A, B>(this Validation<X, A> either, Func<A, Validation<X, B>> selectManyFunc)
         {
             return either.Bind(selectManyFunc);
         }
 
-        public static Validation<C, X> SelectMany<A, B, C, X>(this Validation<A, X> either, Func<A, Validation<B, X>> selectManyFunc, Func<A, B, C> combineFunc)
+        public static Validation<X, C> SelectMany<X, A, B, C>(this Validation<X, A> either, Func<A, Validation<X, B>> selectManyFunc, Func<A, B, C> combineFunc)
         {
-            return either.Bind(a => selectManyFunc(a).Bind(b => Validation.Success<C, X>(combineFunc(a, b))));
+            return either.Bind(a => selectManyFunc(a).Bind(b => Validation.Success<X, C>(combineFunc(a, b))));
         }
     }
 

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
-namespace Jib.Extensions
+namespace Jib.Syntax
 {
     public static class MaybeApplicative
     {
-        public static Maybe<T> PureMaybe<T>(this T value)
+        public static Maybe<A> PureMaybe<A>(this A value)
         {
             return Maybe.Just(value);
         }
@@ -29,12 +30,12 @@ namespace Jib.Extensions
             return Either.Left<A, X>(value);
         }
 
-        public static Either<B, X> Ap<A, B, X>(this Either<Func<A, B>, X> f, Either<A, X> arg)
+        public static Either<X, B> Ap<X, A, B>(this Either<X, Func<A, B>> f, Either<X, A> arg)
         {
             return f.Bind(f0 => arg.Map(f0));
         }
 
-        public static Either<B, X> Ap<A, B, X>(this Func<A, B> f, Either<A, X> arg)
+        public static Either<X, B> Ap<X, A, B>(this Func<A, B> f, Either<X, A> arg)
         {
             return arg.Map(f);
         }
@@ -42,17 +43,17 @@ namespace Jib.Extensions
 
     public static class ValidationApplicative
     {
-        public static Validation<A, X> PureValidation<A, X>(this A value)
+        public static Validation<X, A> PureValidation<X, A>(this A value)
         {
-            return Validation.Success<A, X>(value);
+            return Validation.Success<X, A>(value);
         }
 
-        public static Validation<B, X> Ap<A, B, X>(this Validation<Func<A, B>, X> f, Validation<A, X> arg)
+        public static Validation<X, B> Ap<X, A, B>(this Validation<X, Func<A, B>> f, Validation<X, A> arg)
         {
             return f.Zip(arg).Map(p => p.Fst(p.Snd));
         }
 
-        public static Validation<B, X> Ap<A, B, X>(this Func<A, B> f, Validation<A, X> arg)
+        public static Validation<X, B> Ap<X, A, B>(this Func<A, B> f, Validation<X, A> arg)
         {
             return arg.Map(f);
         }
@@ -60,9 +61,9 @@ namespace Jib.Extensions
 
     public static class PromiseApplicative
     {
-        public static Promise<T> PurePromise<T>(this T value)
+        public static Promise<A> PurePromise<A>(this A value)
         {
-            var p = new Promise<T>();
+            var p = new Promise<A>();
             p.Signal(value);
             return p;
         }
@@ -80,9 +81,9 @@ namespace Jib.Extensions
 
     public static class FutureApplicative
     {
-        public static Future<T> PureFuture<T>(this T value)
+        public static Future<A> PureFuture<A>(this A value)
         {
-            return new Future<T>(cb => cb(value), Strategies.Id);
+            return new Future<A>(cb => cb(value), Strategies.Id);
         }
 
         public static Future<B> Ap<A, B>(this Future<Func<A, B>> f, Future<A> arg)
@@ -96,9 +97,27 @@ namespace Jib.Extensions
         }
     }
 
+    public static class TaskApplicative
+    {
+        public static Task<A> PureTask<A>(this A value)
+        {
+            return new Task<A>(() => value);
+        }
+
+        public static Task<B> Ap<A, B>(this Task<Func<A, B>> f, Task<A> arg)
+        {
+            return f.Zip(arg).Map(x => x.Fst(x.Snd));
+        }
+
+        public static Task<B> Ap<A, B>(this Func<A, B> f, Task<A> arg)
+        {
+            return arg.Map(f);
+        }
+    }
+
     public static class EnumerableApplicative
     {
-        public static IEnumerable<T> PureEnumerable<T>(this T value)
+        public static IEnumerable<A> PureEnumerable<A>(this A value)
         {
             yield return value;
         }

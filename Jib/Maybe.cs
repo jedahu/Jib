@@ -14,7 +14,7 @@ namespace Jib
             this.value = value;
         }
 
-        public B Cata<B>(Func<A, B> just, Func<B> nothing)
+        public B Cata<B>(Func<B> nothing, Func<A, B> just)
         {
             return isJust ? just(value) : nothing();
         }

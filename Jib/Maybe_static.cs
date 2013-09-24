@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Jib.Extensions;
+using Jib.Syntax;
 
 namespace Jib
 {
@@ -24,17 +24,17 @@ namespace Jib
 
         public static bool IsJust<A>(this Maybe<A> maybe)
         {
-            return maybe.Cata(a => true, () => false);
+            return maybe.Cata(() => false, a => true);
         }
 
         public static bool IsNothing<A>(this Maybe<A> maybe)
         {
-            return maybe.Cata(a => false, () => true);
+            return maybe.Cata(() => true, a => false);
         }
 
         public static A ValueOr<A>(this Maybe<A> maybe, Func<A> elseFunc)
         {
-            return maybe.Cata(x => x, elseFunc);
+            return maybe.Cata(elseFunc, x => x);
         }
     }
 }

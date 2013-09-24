@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Jib.Extensions;
+using Jib.Syntax;
 using NUnit.Framework;
 
 namespace Jib.Tests

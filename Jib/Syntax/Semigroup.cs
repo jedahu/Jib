@@ -1,4 +1,4 @@
-﻿namespace Jib.Extensions
+﻿namespace Jib.Syntax
 {
     public static class MaybeSemigroup
     {
@@ -10,9 +10,9 @@
 
     public static class EitherSemigroup
     {
-        public static Either<A, X> SemiOp<A, X>(this Either<A, X> either, Either<A, X> other)
+        public static Either<X, A> SemiOp<X, A>(this Either<X, A> either, Either<X, A> other)
         {
-            return Semigroup.Either<A, X>().Op(either, other);
+            return Semigroup.Either<X, A>().Op(either, other);
         }
     }
 

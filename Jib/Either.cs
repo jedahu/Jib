@@ -2,22 +2,22 @@
 
 namespace Jib
 {
-    public struct Either<A, X>
+    public struct Either<X, A>
     {
-        private readonly A leftValue;
-        private readonly X rightValue;
-        private readonly bool isLeft;
+        private readonly A rightValue;
+        private readonly X leftValue;
+        private readonly bool isRight;
 
-        internal Either(A leftValue, X rightValue, bool isLeft)
+        internal Either(X leftValue, A rightValue, bool isRight)
         {
             this.leftValue = leftValue;
             this.rightValue = rightValue;
-            this.isLeft = isLeft;
+            this.isRight = isRight;
         }
 
-        public B Cata<B>(Func<A, B> left, Func<X, B> right)
+        public B Cata<B>(Func<X, B> left, Func<A, B> right)
         {
-            return isLeft ? left(leftValue) : right(rightValue);
+            return isRight ? right(rightValue) : left(leftValue);
         }
 
         public override bool Equals(object obj)

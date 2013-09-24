@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 
-namespace Jib.Extensions
+namespace Jib.Syntax
 {
     public static class MaybeBind
     {
         public static Maybe<B> Bind<A, B>(this Maybe<A> maybe, Func<A, Maybe<B>> f)
         {
-            return maybe.Cata(f, Maybe.Nothing<B>);
+            return maybe.Cata(Maybe.Nothing<B>, f);
         }
 
         public static Maybe<T> Join<T>(this Maybe<Maybe<T>> maybe)
@@ -18,35 +19,35 @@ namespace Jib.Extensions
 
     public static class EitherBind
     {
-        public static Either<B, X> Bind<A, B, X>(this Either<A, X> either, Func<A, Either<B, X>> f)
+        public static Either<X, B> Bind<X, A, B>(this Either<X, A> either, Func<A, Either<X, B>> f)
         {
-            return either.Cata(f, Either.Right<B, X>);
+            return either.Cata(Either.Left<X, B>, f);
         }
 
-        public static Either<A, Y> BindRight<A, X, Y>(this Either<A, X> either, Func<X, Either<A, Y>> f)
+        public static Either<Y, A> BindLeft<X, Y, A>(this Either<X, A> either, Func<X, Either<Y, A>> f)
         {
-            return either.Cata(Either.Left<A, Y>, f);
+            return either.Cata(f, Either.Right<Y, A>);
         }
 
-        public static Either<A, X> Join<A, X>(this Either<Either<A, X>, X> either)
+        public static Either<X, A> Join<X, A>(this Either<X, Either<X, A>> either)
         {
             return either.Bind(a => a);
         }
 
-        public static Either<A, X> JoinRight<A, X>(this Either<A, Either<A, X>> either)
+        public static Either<X, A> JoinLeft<X, A>(this Either<Either<X, A>, A> either)
         {
-            return either.BindRight(a => a);
+            return either.BindLeft(a => a);
         }
     }
 
     public static class ValidationBind
     {
-        public static Validation<B, X> Bind<A, B, X>(this Validation<A, X> validation, Func<A, Validation<B, X>> f)
+        public static Validation<X, B> Bind<X, A, B>(this Validation<X, A> validation, Func<A, Validation<X, B>> f)
         {
-            return validation.Cata(f, Validation.Failure<B, X>);
+            return validation.Cata(Validation.Failure<X, B>, f);
         }
 
-        public static Validation<A, X> Join<A, X>(this Validation<Validation<A, X>, X> validation)
+        public static Validation<X, A> Join<X, A>(this Validation<X, Validation<X, A>> validation)
         {
             return validation.Bind(a => a);
         }
@@ -77,6 +78,14 @@ namespace Jib.Extensions
         public static Future<T> Join<T>(this Future<Future<T>> future)
         {
             return future.Bind(a => a);
+        }
+    }
+
+    public static class TaskBind
+    {
+        public static Task<B> Bind<A, B>(this Task<A> task, Func<A, Task<B>> f)
+        {
+            return task.ContinueWith(t => f(t.Result), TaskContinuationOptions.OnlyOnRanToCompletion).Result;
         }
     }
 

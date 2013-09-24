@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Jib.Extensions
+namespace Jib.Syntax
 {
     public static class EnumerableUncons
     {
