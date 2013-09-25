@@ -5,55 +5,43 @@ namespace Jib
 {
     public class Lens<A, B>
     {
-        private readonly A record;
         private readonly Func<A, B> get;
         private readonly Func<A, B, A> set;
 
-        public Lens(A record, Func<A, B> get, Func<A, B, A> set)
+        public Lens(Func<A, B> get, Func<A, B, A> set)
         {
-            this.record = record;
             this.get = get;
             this.set = set;
         }
 
-        public B Get
+        public B Get(A a)
         {
-            get { return get(record); }
+            return get(a);
         }
 
-        public A Set(B a)
+        public A Set(A a, B b)
         {
-            return set(record, a);
+            return set(a, b);
         }
 
-        public A Update(Func<B, B> f)
+        public A Update(A a, Func<B, B> f)
         {
-            return set(record, f(get(record)));
+            return set(a, f(get(a)));
         }
 
         public Lens<A, C> Compose<C>(Lens<B, C> lens)
         {
             return new Lens<A, C>(
-                record,
                 lens.get.Map(get),
-                (r, a) => set(r, lens.set(get(r), a)));
+                (a, c) => set(a, lens.set(get(a), c)));
         }
     }
 
     public static class Lens
     {
-        public static Lens<A, B> Create<A, B>(A record, Func<A, B> get, Func<A, B, A> set)
+        public static Lens<A, B> Create<A, B>(Func<A, B> get, Func<A, B, A> set)
         {
-            return new Lens<A, B>(record, get, set);
-        }
-
-    }
-
-    public static class LensExtensions
-    {
-        public static Lens<A, B> Lens<A, B>(this A record, Func<A, B> get, Func<A, B, A> set)
-        {
-            return Jib.Lens.Create(record, get, set);
+            return new Lens<A, B>(get, set);
         }
     }
 }
