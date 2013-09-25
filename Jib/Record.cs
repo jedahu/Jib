@@ -137,22 +137,98 @@ namespace Jib
         }
     }
 
-    public class Person
-        : Record<Person, string, int>
+    public abstract class Record<R, A, B, C, D>
+        where R : Record<R, A, B, C, D>
     {
-        public readonly IField<string> Name;
-        public readonly IField<int> Age;
+        public readonly Product<A, B, C, D> Product;
 
-        public Person(string name, int age)
-            : base(name, age)
+        protected Record(A a, B b, C c, D d)
         {
-            Name = Field1(this);
-            Age = Field2(this);
+            Product = Jib.Product.Create(a, b, c, d);
         }
 
-        protected override Person Create(string name, int age)
+        protected abstract R Create(A a, B b, C c, D d);
+
+        private R Create(Product<A, B, C, D> p)
         {
-            return new Person(name, age);
+            return Create(p.Get1, p.Get2, p.Get3, p.Get4);
+        }
+
+        protected IField<A> Field1(R record) { return new Field<A>(record, p => p.Get1, (p, f) => p.Set1(f)); }
+        protected IField<B> Field2(R record) { return new Field<B>(record, p => p.Get2, (p, f) => p.Set2(f)); }
+        protected IField<C> Field3(R record) { return new Field<C>(record, p => p.Get3, (p, f) => p.Set3(f)); }
+        protected IField<D> Field4(R record) { return new Field<D>(record, p => p.Get4, (p, f) => p.Set4(f)); }
+
+        public interface IField<F>
+        {
+            F Get { get; }
+            R Set(F f);
+        }
+
+        private class Field<F>
+            : IField<F>
+        {
+            private readonly R record;
+            private readonly Func<Product<A, B, C, D>, F> get;
+            private readonly Func<Product<A, B, C, D>, F, Product<A, B, C, D>> set;
+
+            public Field(R record, Func<Product<A, B, C, D>, F> get, Func<Product<A, B, C, D>, F, Product<A, B, C, D>> set)
+            {
+                this.record = record;
+                this.get = get;
+                this.set = set;
+            }
+
+            public F Get { get { return get(record.Product); } }
+            public R Set(F f) { return record.Create(set(record.Product, f)); }
+        }
+    }
+
+    public abstract class Record<R, A, B, C, D, E>
+        where R : Record<R, A, B, C, D, E>
+    {
+        public readonly Product<A, B, C, D, E> Product;
+
+        protected Record(A a, B b, C c, D d, E e)
+        {
+            Product = Jib.Product.Create(a, b, c, d, e);
+        }
+
+        protected abstract R Create(A a, B b, C c, D d, E e);
+
+        private R Create(Product<A, B, C, D, E> p)
+        {
+            return Create(p.Get1, p.Get2, p.Get3, p.Get4, p.Get5);
+        }
+
+        protected IField<A> Field1(R record) { return new Field<A>(record, p => p.Get1, (p, f) => p.Set1(f)); }
+        protected IField<B> Field2(R record) { return new Field<B>(record, p => p.Get2, (p, f) => p.Set2(f)); }
+        protected IField<C> Field3(R record) { return new Field<C>(record, p => p.Get3, (p, f) => p.Set3(f)); }
+        protected IField<D> Field4(R record) { return new Field<D>(record, p => p.Get4, (p, f) => p.Set4(f)); }
+        protected IField<E> Field5(R record) { return new Field<E>(record, p => p.Get5, (p, f) => p.Set5(f)); }
+
+        public interface IField<F>
+        {
+            F Get { get; }
+            R Set(F f);
+        }
+
+        private class Field<F>
+            : IField<F>
+        {
+            private readonly R record;
+            private readonly Func<Product<A, B, C, D, E>, F> get;
+            private readonly Func<Product<A, B, C, D, E>, F, Product<A, B, C, D, E>> set;
+
+            public Field(R record, Func<Product<A, B, C, D, E>, F> get, Func<Product<A, B, C, D, E>, F, Product<A, B, C, D, E>> set)
+            {
+                this.record = record;
+                this.get = get;
+                this.set = set;
+            }
+
+            public F Get { get { return get(record.Product); } }
+            public R Set(F f) { return record.Create(set(record.Product, f)); }
         }
     }
 }
