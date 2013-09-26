@@ -1,4 +1,5 @@
 ﻿using System;
+using Jib.Syntax;
 
 namespace Jib
 {
@@ -28,6 +29,16 @@ namespace Jib
         public A Update(Func<B, B> f)
         {
             return set(record, f(get(record)));
+        }
+
+        public Field<A, C> Choose<C>(Func<B, Field<B, C>> f)
+        {
+            var b = get(record);
+            var bcf = f(get(record));
+            return new Field<A, C>(
+                record,
+                bcf.get.Map(get),
+                (a, c) => set(a, bcf.set(b, c)));
         }
     }
 
