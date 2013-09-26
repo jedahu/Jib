@@ -40,9 +40,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Arity.cs" />
+    <Compile Include="IFunctor.cs" />
     <Compile Include="Instances\Eq.cs" />
-    <Compile Include="Product.cs" />
+    <Compile Include="Instances\Functor.cs" />
     <Compile Include="Lens.cs" />
+    <Compile Include="Product.cs" />
+    <Compile Include="Field.cs" />
     <Compile Include="Record.cs" />
     <Compile Include="Syntax\Enumerable.cs" />
     <Compile Include="Syntax\Extend.cs" />

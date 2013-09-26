@@ -1,85 +1,81 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Jib.Instances;
 
 namespace Jib.Syntax
 {
-    public static class FuncFunctor
+    public static class FuncFunctorSyntax
     {
-        public static Func<X, B> Map<X, A, B>(this Func<A, B> f, Func<X, A> g)
+        public static Func<X, B> Map<X, A, B>(this Func<X, A> g, Func<A, B> f)
         {
-            return x => f(g(x));
+            return FuncFunctor.Instance.Map(g, f);
         }
     }
 
-    public static class MaybeFunctor
+    public static class MaybeFunctorSyntax
     {
         public static Maybe<B> Map<A, B>(this Maybe<A> maybe, Func<A, B> f)
         {
-            return maybe.Cata(Maybe.Nothing<B>, a => Maybe.Just(f(a)));
+            return MaybeFunctor.Instance.Map(maybe, f);
         }
     }
 
-    public static class EitherFunctor
+    public static class EitherFunctorSyntax
     {
         public static Either<X, B> Map<X, A, B>(this Either<X, A> either, Func<A, B> f)
         {
-            return either.Cata(Either.Left<X, B>, a => Either.Right<X, B>(f(a)));
+            return EitherFunctor.Instance.Map(either, f);
         }
 
         public static Either<Y, A> MapRight<X, Y, A>(this Either<X, A> either, Func<X, Y> f)
         {
-            return either.Swap(e => e.Map(f));
+            return EitherFunctor.Instance.MapLeft(either, f);
         }
     }
 
-    public static class ValidationFunctor
+    public static class ValidationFunctorSyntax
     {
         public static Validation<X, B> Map<X, A, B>(this Validation<X, A> validation, Func<A, B> f)
         {
-            return validation.Cata(Validation.Failure<X, B>, a => Validation.Success<X, B>(f(a)));
+            return ValidationFunctor.Instance.Map(validation, f);
         }
 
         public static Validation<Y, A> MapFailure<X, Y, A>(this Validation<X, A> validation, Func<X, Y> f)
         {
-            return validation.Cata(xs => Validation.Failure<Y, A>(xs.Map(f)), Validation.Success<Y, A>);
+            return ValidationFunctor.Instance.MapFailure(validation, f);
         }
     }
 
-    public static class PromiseFunctor
+    public static class PromiseFunctorSyntax
     {
         public static Promise<B> Map<A, B>(this Promise<A> promise, Func<A, B> f)
         {
-            var p = new Promise<B>();
-            p.Strategy.Call(() => p.Signal(f(promise.Wait)));
-            return p;
+            return PromiseFunctor.Instance.Map(promise, f);
         }
     }
 
-    public static class FutureFunctor
+    public static class FutureFunctorSyntax
     {
         public static Future<B> Map<A, B>(this Future<A> future, Func<A, B> f)
         {
-            return new Future<B>(
-                cb => future.Callback(a => cb(f(a))),
-                future.Strategy);
+            return FutureFunctor.Instance.Map(future, f);
         }
     }
 
-    public static class TaskFunctor
+    public static class TaskFunctorSyntax
     {
         public static Task<B> Map<A, B>(this Task<A> task, Func<A, B> f)
         {
-            return task.ContinueWith(t => f(t.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
+            return TaskFunctor.Instance.Map(task, f);
         }
     }
 
-    public static class NonEmptyLazyListFunctor
+    public static class NonEmptyLazyListFunctorSyntax
     {
         public static NonEmptyLazyList<B> Map<A, B>(this NonEmptyLazyList<A> list, Func<A, B> f)
         {
-            var ht = list.HeadTail();
-            return f(ht.Fst).Cons(ht.Snd.Select(f));
+            return NonEmptyLazyListFunctor.Instance.Map(list, f);
         }
     }
 }

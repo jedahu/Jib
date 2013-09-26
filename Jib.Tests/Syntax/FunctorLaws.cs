@@ -24,7 +24,7 @@ namespace Jib.Tests.Syntax
         private readonly IEq<Maybe<int>> eq = MaybeEq.Create(PrimEq.Int);
 
         private readonly Func<Maybe<int>, Maybe<int>> mapId = m => m.Map(x => x);
-        private readonly Func<Maybe<int>, Maybe<int>> mapFG = m => m.Map(F.Map(G));
+        private readonly Func<Maybe<int>, Maybe<int>> mapFG = m => m.Map(G.Map(F));
         private readonly Func<Maybe<int>, Maybe<int>> mapFmapG = m => m.Map(G).Map(F);
 
         [TestCaseSource("Ints")]
@@ -127,8 +127,8 @@ namespace Jib.Tests.Syntax
     public class NonEmptyLazyListFunctorLaws
         : FunctorLaws
     {
-        protected static readonly Func<char, char> F = x => Convert.ToChar(FunctorLaws.F(x));
-        protected static readonly Func<char, char> G = x => Convert.ToChar(FunctorLaws.G(x));
+        protected static new readonly Func<char, char> F = x => Convert.ToChar(FunctorLaws.F(x));
+        protected static new readonly Func<char, char> G = x => Convert.ToChar(FunctorLaws.G(x));
 
         private readonly IEq<NonEmptyLazyList<char>> eq = NonEmptyLazyListEq.Create(PrimEq.Char);
 

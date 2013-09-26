@@ -37,7 +37,7 @@ namespace Jib
             var bcf = f(get(record));
             return new Field<A, C>(
                 record,
-                bcf.get.Map(get),
+                get.Map(bcf.get),
                 (a, c) => set(a, bcf.set(b, c)));
         }
     }

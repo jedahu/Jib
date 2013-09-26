@@ -32,7 +32,7 @@ namespace Jib
         public Lens<A, C> Compose<C>(Lens<B, C> lens)
         {
             return new Lens<A, C>(
-                lens.get.Map(get),
+                get.Map(lens.get),
                 (a, c) => set(a, lens.set(get(a), c)));
         }
     }
