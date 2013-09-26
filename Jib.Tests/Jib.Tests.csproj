@@ -54,7 +54,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Instances\EqTest.cs" />
-    <Compile Include="Syntax\FunctorLaws.cs" />
+    <Compile Include="Instances\FunctorLaws.cs" />
     <Compile Include="Generate.cs" />
     <Compile Include="LazyListTest.cs" />
     <Compile Include="MemoizedEnumerableTest.cs" />
@@ -76,6 +76,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Syntax\" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

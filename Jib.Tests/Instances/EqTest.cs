@@ -1,6 +1,4 @@
-﻿using System;
-using Jib.Instances;
-using Jib.Syntax;
+﻿using Jib.Instances;
 using NUnit.Framework;
 
 namespace Jib.Tests.Instances
@@ -123,17 +121,15 @@ namespace Jib.Tests.Instances
         [TestCaseSource("NonEmptyStrings")]
         public void FailureEq(string a)
         {
-            a.NonEmptyLazyList().CataVoid(
-                () => { throw new Exception("Test is broken."); },
-                chars => Assert.True(eq.Eq(Validation.Failure<char, int>(chars), Validation.Failure<char, int>(chars))));
+            var chars = 'a'.Cons(a);
+            Assert.True(eq.Eq(Validation.Failure<char, int>(chars), Validation.Failure<char, int>(chars)));
         }
 
         [TestCaseSource("NonEmptyStrings")]
         public void FailureNeq(string a)
         {
-            a.NonEmptyLazyList().CataVoid(
-                () => { throw new Exception("Test is broken."); },
-                chars => Assert.False(eq.Eq(Validation.Failure<char, int>(chars), Validation.Failure<char, int>('a'.Cons(chars)))));
+            var chars = 'a'.Cons(a);
+            Assert.False(eq.Eq(Validation.Failure<char, int>(chars), Validation.Failure<char, int>('a'.Cons(chars))));
         }
 
         [TestCaseSource("Ints")]
@@ -165,17 +161,13 @@ namespace Jib.Tests.Instances
         [TestCaseSource("Intss")]
         public void Eq(int[] xs)
         {
-            xs.NonEmptyLazyList().Zip(xs.NonEmptyLazyList()).CataVoid(
-                () => { throw new Exception("Test is broken."); },
-                p => Assert.True(eq.Eq(p.Fst, p.Snd)));
+            Assert.True(eq.Eq(1.Cons(xs), 1.Cons(xs)));
         }
 
         [TestCaseSource("Intss")]
         public void Neq(int[] xs)
         {
-            xs.NonEmptyLazyList().Zip(xs.NonEmptyLazyList()).CataVoid(
-                () => { throw new Exception("Test is broken."); },
-                p => Assert.False(eq.Eq(p.Fst, NextNat.Cons(p.Snd))));
+            Assert.False(eq.Eq(1.Cons(xs), 2.Cons(xs)));
         }
     }
 }

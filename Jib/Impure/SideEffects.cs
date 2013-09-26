@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace Jib.Syntax
+namespace Jib.Impure
 {
     public static class MaybeSideEffects
     {

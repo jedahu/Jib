@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using Jib.Syntax;
-
-namespace Jib.Instances
+﻿namespace Jib.Instances
 {
     public class ValueEq<A>
         : IEq<A>
@@ -134,9 +131,11 @@ namespace Jib.Instances
             return
                 aeq.Eq(t1.Head, t2.Head) &&
                 ((t1.Tail.IsNothing() && t2.Tail.IsNothing())
-                 || t1.Tail.Zip(t2.Tail)
-                        .Map(p => Eq(p.Fst, p.Snd))
-                        .ValueOr(() => false));
+                 ||
+                 MaybeFunctor.Instance.Map(
+                     MaybeZipable.Instance.Zip(t1.Tail, t2.Tail),
+                     p => Eq(p.Fst, p.Snd))
+                     .ValueOr(() => false));
         }
     }
 

@@ -62,6 +62,16 @@ namespace Jib
             return validation.Cata(x => true, a => false);
         }
 
+        public static IEnumerable<A> SuccessEnumerable<X, A>(this Validation<X, A> validation)
+        {
+            return validation.Cata(xs => Enumerable.Empty<A>(), a => a.PureEnumerable());
+        }
+
+        public static IEnumerable<X> FailureEnumerable<X, A>(this Validation<X, A> validation)
+        {
+            return validation.Cata(xs => xs.Enumerable(), a => Enumerable.Empty<X>());
+        }
+
         public static IEnumerable<A> Successes<X, A>(this IEnumerable<Validation<X, A>> enumerable)
         {
             return enumerable.SelectMany(v => v.SuccessEnumerable());

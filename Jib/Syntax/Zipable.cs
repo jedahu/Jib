@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Jib.Instances;
 
 namespace Jib.Syntax
 {
-    public static class MaybeZipable
+    public static class MaybeZipableSyntax
     {
         public static Maybe<Pair<A, B>> Zip<A, B>(this Maybe<A> maybe, Maybe<B> other)
         {
-            return maybe.Cata(Maybe.Nothing<Pair<A, B>>, a => other.Cata(Maybe.Nothing<Pair<A, B>>, b => Maybe.Just(Pair.Create(a, b))));
+            return MaybeZipable.Instance.Zip(maybe, other);
         }
     }
 
-    public static class ValidationZipable
+    public static class ValidationZipableSyntax
     {
         public static Validation<X, Pair<A, B>> Zip<X, A, B>(this Validation<X, A> validation, Validation<X, B> other)
         {
@@ -29,7 +30,7 @@ namespace Jib.Syntax
         }
     }
 
-    public static class FutureZipable
+    public static class FutureZipableSyntax
     {
         public static Future<Pair<A, B>> Zip<A, B>(this Future<A> future, Future<B> other)
         {
@@ -63,7 +64,7 @@ namespace Jib.Syntax
         }
     }
 
-    public static class TaskZipable
+    public static class TaskZipableSyntax
     {
         public static Task<Pair<A, B>> Zip<A, B>(this Task<A> task, Task<B> other)
         {
@@ -75,7 +76,7 @@ namespace Jib.Syntax
         }
     }
 
-    public static class EnumerableZipable
+    public static class EnumerableZipableSyntax
     {
         public static IEnumerable<Pair<A, B>> Zip<A, B>(this IEnumerable<A> enumerable, IEnumerable<B> other)
         {
@@ -87,7 +88,7 @@ namespace Jib.Syntax
         }
     }
 
-    public static class NonEmptyLazyListZipable
+    public static class NonEmptyLazyListZipableSyntax
     {
         public static NonEmptyLazyList<Pair<A, B>> Zip<A, B>(this NonEmptyLazyList<A> list, NonEmptyLazyList<B> other)
         {

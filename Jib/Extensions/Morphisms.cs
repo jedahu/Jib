@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Jib.Syntax;
 
-namespace Jib.Syntax
+namespace Jib.Extensions
 {
     public static class MaybeMorphisms
     {
@@ -78,6 +79,16 @@ namespace Jib.Syntax
         public static LazyList<A> LazyList<A>(this IEnumerable<A> enumerable)
         {
             return Jib.LazyList.Create(enumerable);
+        }
+
+        public static IEnumerable<X> Lefts<X, A>(this IEnumerable<Either<X, A>> eithers)
+        {
+            return eithers.SelectMany(e => e.LeftEnumerable());
+        }
+
+        public static IEnumerable<A> Rights<X, A>(this IEnumerable<Either<X, A>> eithers)
+        {
+            return eithers.SelectMany(e => e.RightEnumerable());
         }
     }
 }

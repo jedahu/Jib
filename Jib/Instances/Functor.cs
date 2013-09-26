@@ -35,7 +35,7 @@ namespace Jib.Instances
                 return new DynamicFunctor<A, C>(Instance.Map(g, f));
             }
 
-            public dynamic Value { get { return g; } }
+            public object Value { get { return g; } }
         }
     }
 
@@ -70,7 +70,7 @@ namespace Jib.Instances
                 return new DynamicFunctor<B>(Instance.Map(maybe, f));
             }
 
-            public dynamic Value
+            public object Value
             {
                 get { return maybe; }
             }
@@ -113,7 +113,7 @@ namespace Jib.Instances
                 return new DynamicFunctor<X, B>(Instance.Map(either, f));
             }
 
-            public dynamic Value
+            public object Value
             {
                 get { return either; }
             }
@@ -159,7 +159,7 @@ namespace Jib.Instances
                 return new DynamicFunctor<X, B>(Instance.Map(validation, f));
             }
 
-            public dynamic Value
+            public object Value
             {
                 get { return validation; }
             }
@@ -199,7 +199,7 @@ namespace Jib.Instances
                 return new DynamicFunctor<B>(Instance.Map(promise, f));
             }
 
-            public dynamic Value
+            public object Value
             {
                 get { return promise; }
             }
@@ -239,7 +239,7 @@ namespace Jib.Instances
                 return new DynamicFunctor<B>(Instance.Map(future, f));
             }
 
-            public dynamic Value
+            public object Value
             {
                 get { return future; }
             }
@@ -277,7 +277,7 @@ namespace Jib.Instances
                 return new DynamicFunctor<B>(Instance.Map(task, f));
             }
 
-            public dynamic Value
+            public object Value
             {
                 get { return task; }
             }
@@ -316,7 +316,7 @@ namespace Jib.Instances
                 return new DynamicFunctor<B>(Instance.Map(list, f));
             }
 
-            public dynamic Value
+            public object Value
             {
                 get { return list; }
             }

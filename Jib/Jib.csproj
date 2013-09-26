@@ -40,9 +40,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Arity.cs" />
+    <Compile Include="Extensions\Morphisms.cs" />
     <Compile Include="IFunctor.cs" />
+    <Compile Include="Impure\SideEffects.cs" />
     <Compile Include="Instances\Eq.cs" />
     <Compile Include="Instances\Functor.cs" />
+    <Compile Include="Instances\Zipable.cs" />
+    <Compile Include="IZipable.cs" />
     <Compile Include="Lens.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="Field.cs" />
@@ -56,11 +60,9 @@
     <Compile Include="Syntax\Eq.cs" />
     <Compile Include="Syntax\Functor.cs" />
     <Compile Include="Syntax\Linq.cs" />
-    <Compile Include="Syntax\Morphisms.cs" />
     <Compile Include="Syntax\Nullsafe.cs" />
     <Compile Include="Syntax\Predicates.cs" />
     <Compile Include="Syntax\Semigroup.cs" />
-    <Compile Include="Syntax\SideEffects.cs" />
     <Compile Include="Syntax\Traversable.cs" />
     <Compile Include="Syntax\Uncons.cs" />
     <Compile Include="Syntax\Zipable.cs" />

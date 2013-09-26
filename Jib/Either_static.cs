@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using Jib.Syntax;
 
 namespace Jib
 {
@@ -65,16 +62,6 @@ namespace Jib
         public static Either<Y, A> Swap<A, X, Y>(this Either<X, A> either, Func<Either<A, X>, Either<A, Y>> f)
         {
             return f(either.Swap()).Swap();
-        }
-
-        public static IEnumerable<X> Lefts<X, A>(this IEnumerable<Either<X, A>> eithers)
-        {
-            return eithers.SelectMany(e => e.LeftEnumerable());
-        }
-
-        public static IEnumerable<A> Rights<X, A>(this IEnumerable<Either<X, A>> eithers)
-        {
-            return eithers.SelectMany(e => e.RightEnumerable());
         }
     }
 }
